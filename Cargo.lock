@@ -1792,6 +1792,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "gpgui-replica"
+version = "2.5.4"
+dependencies = [
+ "anyhow",
+ "common",
+ "env_logger",
+ "gpapi",
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tokio",
+]
+
+[[package]]
 name = "gpservice"
 version = "2.5.4"
 dependencies = [

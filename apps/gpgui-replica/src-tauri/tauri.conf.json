@@ -1,0 +1,45 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "beforeBuildCommand": "pnpm build",
+    "devUrl": "http://localhost:1422",
+    "frontendDist": "../dist"
+  },
+  "identifier": "com.yuezk.gpgui-replica",
+  "productName": "GP Connect",
+  "app": {
+    "withGlobalTauri": false,
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "title": "GP Connect",
+        "label": "main",
+        "center": true,
+        "resizable": false,
+        "width": 350,
+        "height": 460,
+        "minWidth": 350,
+        "minHeight": 460,
+        "maxWidth": 350,
+        "maxHeight": 460
+      }
+    ]
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["deb", "appimage"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "Network",
+    "shortDescription": "GlobalProtect VPN client GUI",
+    "longDescription": "Open-source GUI for GlobalProtect-openconnect. Connects to the gpservice daemon over its local WebSocket IPC."
+  }
+}
