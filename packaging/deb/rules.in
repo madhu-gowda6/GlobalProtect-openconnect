@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+
+export BUILD_GUI_HELPER = @BUILD_GUI_HELPER@
+export DISABLE_RUST_TOOLCHAIN = 0
+
+export PATH := /usr/lib/rust-@RUST_VERSION@/bin:/usr/local/cargo/bin:$(PATH)
+
+%:
+	which cargo
+	which rustc
+	dh $@ --no-parallel
