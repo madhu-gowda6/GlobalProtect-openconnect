@@ -3,7 +3,7 @@
 A modern, open-source GlobalProtect VPN client for Linux, built on [OpenConnect](https://www.infradead.org/openconnect/) with full support for SSO and MFA authentication.
 
 <p align="center">
-  <img width="300" src="https://github.com/user-attachments/assets/2fb6116c-dc57-43f2-af75-9c3d97ab7122">
+  <img width="300" src="screenshot.png">
 </p>
 
 ## Features
