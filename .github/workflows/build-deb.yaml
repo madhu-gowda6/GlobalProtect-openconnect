@@ -25,8 +25,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
+
+      - name: Fetch C source dependencies
+        run: |
+          git clone --depth 1 --branch v9.12 https://gitlab.com/openconnect/openconnect.git \
+            crates/openconnect/deps/openconnect
+          git clone --depth 1 --branch v2.9.9 https://gitlab.gnome.org/GNOME/libxml2.git \
+            crates/openconnect/deps/libxml2
 
       - name: Install Node.js
         uses: actions/setup-node@v4
