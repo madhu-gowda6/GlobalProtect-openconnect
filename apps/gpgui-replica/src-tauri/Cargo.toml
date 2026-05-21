@@ -15,12 +15,16 @@ gpapi = { path = "../../../crates/gpapi", features = ["tauri", "clap"] }
 common = { path = "../../../crates/common" }
 tauri.workspace = true
 
-tokio.workspace = true
+tokio = { workspace = true, features = ["io-std", "io-util", "macros", "rt-multi-thread", "sync", "time"] }
+tokio-tungstenite = "0.24"
+futures-util.workspace = true
 anyhow.workspace = true
 log.workspace = true
 env_logger.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+base64.workspace = true
+clap.workspace = true
 
 [features]
 default = ["tauri/custom-protocol"]

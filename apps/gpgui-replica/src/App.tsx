@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { Header } from "./components/Header";
 import { StatusShield } from "./components/StatusShield";
@@ -7,28 +7,48 @@ import { ConnectButton } from "./components/ConnectButton";
 import { Footer } from "./components/Footer";
 import { HamburgerMenu, HamburgerAction } from "./components/HamburgerMenu";
 import { ConnectionStatus, statusLabel } from "./types/connection";
-import { openSettings, quitApp } from "./tauri/commands";
+import { vpnStateToStatus, vpnStatePortal } from "./types/vpn";
+import { onServiceStatus, onVpnState } from "./tauri/events";
+import { disconnectVpn, openSettings, quitApp } from "./tauri/commands";
 
 const APP_VERSION = "v2.5.4";
 
 export function App() {
-  const [portal, setPortal] = useState("go.sg.de.o2.com");
+  const [portal, setPortal] = useState("");
+  const [activePortal, setActivePortal] = useState<string | undefined>(undefined);
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
+  const [serviceUp, setServiceUp] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
 
-  const handleConnectClick = () => {
-    setStatus((s) => {
-      switch (s) {
-        case "disconnected":
-          return "connecting";
-        case "connecting":
-          return "disconnected";
-        case "connected":
-          return "disconnecting";
-        case "disconnecting":
-          return "disconnecting";
+  // Subscribe to gpservice events once.
+  useEffect(() => {
+    const unlisteners: Array<() => void> = [];
+
+    onVpnState((s) => {
+      setStatus(vpnStateToStatus(s));
+      setActivePortal(vpnStatePortal(s));
+    }).then((u) => unlisteners.push(u));
+
+    onServiceStatus((s) => {
+      setServiceUp(s === "connected");
+      if (s === "disconnected") {
+        // gpservice gone → assume nothing is connected.
+        setStatus("disconnected");
+        setActivePortal(undefined);
       }
-    });
+    }).then((u) => unlisteners.push(u));
+
+    return () => unlisteners.forEach((u) => u());
+  }, []);
+
+  const handleConnectClick = () => {
+    if (status === "connected" || status === "connecting") {
+      disconnectVpn().catch((err) => console.error("disconnect_vpn failed:", err));
+      return;
+    }
+    // Milestone 5 wires real connect (portal pre-login + gpauth + ConnectRequest).
+    // For now do nothing on click when disconnected.
+    console.info("connect: portal pre-login not yet implemented (milestone 5)");
   };
 
   const handleMenuAction = (action: HamburgerAction) => {
@@ -41,11 +61,12 @@ export function App() {
         return;
       case "switchGateway":
       case "clearCredentials":
-        // Milestone 5+: wire to gpservice/cookie store.
         console.info("menu action (stub):", action);
         return;
     }
   };
+
+  const shieldPortal = activePortal ?? (portal || undefined);
 
   return (
     <Box
@@ -78,7 +99,7 @@ export function App() {
           gap: 1.25,
         }}
       >
-        <StatusShield status={status} portal={portal} />
+        <StatusShield status={status} portal={shieldPortal} />
 
         <Typography
           variant="body1"
@@ -86,6 +107,19 @@ export function App() {
         >
           {statusLabel(status)}
         </Typography>
+
+        {!serviceUp && (
+          <Typography
+            variant="caption"
+            sx={{
+              fontSize: 11,
+              color: "#ffa726",
+              mt: -0.75,
+            }}
+          >
+            gpservice unreachable — retrying...
+          </Typography>
+        )}
 
         <Box sx={{ width: "100%", mt: 0.5 }}>
           <PortalInput
