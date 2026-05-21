@@ -14,3 +14,15 @@ gen
 
 # Nix files
 result
+
+# openconnect C source submodules (copied from upstream; ~70 MB, not tracked here)
+crates/openconnect/deps/openconnect/
+crates/openconnect/deps/libxml2/
+
+# gpgui-replica frontend build output and dependencies
+apps/gpgui-replica/dist/
+apps/gpgui-replica/node_modules/
+apps/gpgui-replica/.pnpm-store/
+
+# Tauri gen schemas (regenerated on every build)
+apps/gpgui-replica/src-tauri/gen/

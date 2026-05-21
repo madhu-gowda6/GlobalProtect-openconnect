@@ -4,10 +4,11 @@ import { ConnectionStatus } from "../types/connection";
 type Props = {
   status: ConnectionStatus;
   onClick: () => void;
+  busy?: boolean;
 };
 
-export function ConnectButton({ status, onClick }: Props) {
-  const { label, disabled } = buttonState(status);
+export function ConnectButton({ status, onClick, busy }: Props) {
+  const { label, disabled } = buttonState(status, busy);
 
   return (
     <Button
@@ -33,7 +34,13 @@ export function ConnectButton({ status, onClick }: Props) {
   );
 }
 
-function buttonState(status: ConnectionStatus): { label: string; disabled: boolean } {
+function buttonState(
+  status: ConnectionStatus,
+  busy?: boolean
+): { label: string; disabled: boolean } {
+  if (busy && status === "disconnected") {
+    return { label: "Cancel", disabled: false };
+  }
   switch (status) {
     case "disconnected":
       return { label: "Connect", disabled: false };
