@@ -28,8 +28,11 @@ jobs:
 
       - name: Fetch C source dependencies
         run: |
-          git clone --depth 1 --branch v9.12 https://gitlab.com/openconnect/openconnect.git \
+          # Clone openconnect at the exact commit the patches were written for
+          git clone https://gitlab.com/openconnect/openconnect.git \
             crates/openconnect/deps/openconnect
+          git -C crates/openconnect/deps/openconnect checkout 0dcdff87db65daf692dc323732831391d595d98d
+          # Clone libxml2 at v2.9.9 (tag commit f8a8c1f5)
           git clone --depth 1 --branch v2.9.9 https://gitlab.gnome.org/GNOME/libxml2.git \
             crates/openconnect/deps/libxml2
 
