@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN" "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
 <policyconfig>
-  <vendor>The GlobalProtect-openconnect Project</vendor>
-  <vendor_url>https://github.com/yuezk/GlobalProtect-openconnect</vendor_url>
+  <vendor>Atharv</vendor>
+  <vendor_url>https://github.com/madhu-gowda6/GlobalProtect-openconnect</vendor_url>
   <icon_name>gpgui</icon_name>
-  <action id="com.yuezk.gpgui.service">
+  <action id="com.atharv.gpgui.service">
     <description>Run GPService as root</description>
     <message>Authentication is required to run the GPService as root</message>
     <defaults>

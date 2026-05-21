@@ -24,7 +24,7 @@ Build-Depends: debhelper (>= 9),
   gnome-keyring,
   libwebkit2gtk-4.1-dev,
   rust-@RUST_VERSION@-all
-Homepage: https://github.com/yuezk/GlobalProtect-openconnect
+Homepage: https://github.com/madhu-gowda6/GlobalProtect-openconnect
 
 Package: globalprotect-openconnect
 Architecture: any

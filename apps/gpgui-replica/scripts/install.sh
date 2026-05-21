@@ -75,8 +75,8 @@ install -Dm644 "$FILES/usr/share/icons/hicolor/128x128/apps/gpgui.png" \
   /usr/share/icons/hicolor/128x128/apps/gpgui.png
 install -Dm644 "$FILES/usr/share/icons/hicolor/256x256@2/apps/gpgui.png" \
   /usr/share/icons/hicolor/256x256@2/apps/gpgui.png
-install -Dm644 "$FILES/usr/share/polkit-1/actions/com.yuezk.gpgui.policy" \
-  /usr/share/polkit-1/actions/com.yuezk.gpgui.policy
+install -Dm644 "$FILES/usr/share/polkit-1/actions/com.atharv.gpgui.policy" \
+  /usr/share/polkit-1/actions/com.atharv.gpgui.policy
 
 # Refresh desktop/icon caches (best-effort).
 update-desktop-database -q /usr/share/applications 2>/dev/null || true

@@ -61,8 +61,7 @@
         "vpninfo",
         "webbrowser",
         "wmctrl",
-        "XAUTHORITY",
-        "yuezk"
+        "XAUTHORITY"
     ],
     "rust-analyzer.cargo.features": "all",
     "files.associations": {

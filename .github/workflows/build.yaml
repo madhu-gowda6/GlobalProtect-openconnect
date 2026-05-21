@@ -53,7 +53,7 @@ jobs:
       uses: actions/checkout@v6
       with:
         token: ${{ secrets.GH_PAT }}
-        repository: yuezk/GlobalProtect-openconnect
+        repository: madhu-gowda6/GlobalProtect-openconnect
         ref: ${{ github.event_name == 'workflow_dispatch' && inputs.gp_branch || github.ref }}
         path: source/gp
         submodules: recursive
@@ -77,7 +77,7 @@ jobs:
 
         make init-rpm \
           REVISION='1%{?dist}' \
-          RPM_SOURCE=https://github.com/yuezk/GlobalProtect-openconnect/releases/download/${RELEASE_TAG}/%{name}-%{version}.tar.gz
+          RPM_SOURCE=https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases/download/${RELEASE_TAG}/%{name}-%{version}.tar.gz
 
         mv -v .build/rpm/*.spec ../artifacts/
 
@@ -160,14 +160,14 @@ jobs:
           -e COREPACK_INTEGRITY_KEYS=0 \
           -e LIBXML2_STATIC=1 \
           -v $(pwd)/build-gp-${{ matrix.package }}:/workspace \
-          yuezk/gpdev:${{ matrix.package }}-builder-tauri2
+          madhu-gowda6/gpdev:${{ matrix.package }}-builder-tauri2
     - name: Install ${{ matrix.package }} package in Docker
       run: |
         docker run --pull=always --rm \
           -e COREPACK_INTEGRITY_KEYS=0 \
           -e GPGUI_INSTALLED=0 \
           -v $(pwd)/build-gp-${{ matrix.package }}:/workspace \
-          yuezk/gpdev:${{ matrix.package }}-builder-tauri2 \
+          madhu-gowda6/gpdev:${{ matrix.package }}-builder-tauri2 \
           bash install.sh
     # Don't upload package for ubuntu-rolling because it's duplicate of deb package
     - name: Upload ${{ matrix.package }} package
@@ -198,7 +198,7 @@ jobs:
       uses: actions/checkout@v6
       with:
         token: ${{ secrets.GH_PAT }}
-        repository: yuezk/GlobalProtect-openconnect
+        repository: madhu-gowda6/GlobalProtect-openconnect
         ref: ${{ github.event_name == 'workflow_dispatch' && inputs.gp_branch || github.ref }}
         submodules: recursive
     - name: Set up Docker Buildx
@@ -215,10 +215,10 @@ jobs:
         context: .
         file: packaging/docker/alpine/Dockerfile
         platforms: ${{ matrix.platform }}
-        outputs: type=image,name=yuezk/globalprotect-openconnect,push-by-digest=true,name-canonical=true,push=true
+        outputs: type=image,name=madhu-gowda6/globalprotect-openconnect,push-by-digest=true,name-canonical=true,push=true
     - name: Verify CLI tools
       env:
-        IMAGE: yuezk/globalprotect-openconnect
+        IMAGE: madhu-gowda6/globalprotect-openconnect
         DIGEST: ${{ steps.build.outputs.digest }}
       run: |
         docker run --rm "$IMAGE@$DIGEST" --help
@@ -263,7 +263,7 @@ jobs:
       uses: actions/checkout@v6
       with:
         token: ${{ secrets.GH_PAT }}
-        repository: yuezk/GlobalProtect-openconnect
+        repository: madhu-gowda6/GlobalProtect-openconnect
         ref: ${{ github.event_name == 'workflow_dispatch' && inputs.gp_branch || github.ref }}
         path: gpgui-source/gp
         submodules: recursive
@@ -271,7 +271,7 @@ jobs:
       uses: actions/checkout@v6
       with:
         token: ${{ secrets.GH_PAT }}
-        repository: yuezk/gpgui
+        repository: madhu-gowda6/gpgui
         ref: ${{ github.event_name == 'workflow_dispatch' && inputs.gpgui_branch || github.ref_name }}
         path: gpgui-source/gpgui
     - name: Tarball
@@ -284,14 +284,14 @@ jobs:
       run: |
         docker run --pull=always --rm \
           -e COREPACK_INTEGRITY_KEYS=0 \
-          -v $(pwd)/gpgui-source:/workspace yuezk/gpdev:${{ matrix.libc.builder }}
+          -v $(pwd)/gpgui-source:/workspace madhu-gowda6/gpdev:${{ matrix.libc.builder }}
     - name: Install gpgui in Docker
       run: |
         cd gpgui-source
         tar -xJf *.bin.tar.xz
         docker run --pull=always --rm \
           -e COREPACK_INTEGRITY_KEYS=0 \
-          -v $(pwd):/workspace yuezk/gpdev:${{ matrix.libc.builder }} \
+          -v $(pwd):/workspace madhu-gowda6/gpdev:${{ matrix.libc.builder }} \
           bash -c "cd /workspace/gpgui_*/ && ./gpgui --version"
     - name: Upload gpgui
       uses: actions/upload-artifact@v7
@@ -320,7 +320,7 @@ jobs:
       uses: actions/checkout@v6
       with:
         token: ${{ secrets.GH_PAT }}
-        repository: yuezk/GlobalProtect-openconnect
+        repository: madhu-gowda6/GlobalProtect-openconnect
         ref: ${{ github.event_name == 'workflow_dispatch' && inputs.gp_branch || github.ref }}
         path: gh-release/gp
         submodules: recursive
@@ -370,7 +370,7 @@ jobs:
     - name: Publish Docker manifest
       working-directory: /tmp/digests
       env:
-        IMAGE: yuezk/globalprotect-openconnect
+        IMAGE: madhu-gowda6/globalprotect-openconnect
         RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && 'snapshot' || github.ref_name }}
       run: |
         docker buildx imagetools create -t "$IMAGE:$RELEASE_TAG" \

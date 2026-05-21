@@ -78,7 +78,7 @@ download-gui:
 	if [ $(INCLUDE_GUI) -eq 1 ]; then \
 		echo "Downloading GlobalProtect GUI..."; \
 		mkdir -p .build/gpgui; \
-		curl -sSL https://github.com/yuezk/GlobalProtect-openconnect/releases/download/$(RELEASE_TAG)/gpgui_$(shell uname -m)$(GUI_LIBC_SUFFIX).bin.tar.xz \
+		curl -sSL https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases/download/$(RELEASE_TAG)/gpgui_$(shell uname -m)$(GUI_LIBC_SUFFIX).bin.tar.xz \
 			-o .build/gpgui/gpgui_$(shell uname -m)$(GUI_LIBC_SUFFIX).bin.tar.xz; \
 		tar -xJf .build/gpgui/*.tar.xz -C .build/gpgui; \
 	else \
@@ -138,7 +138,7 @@ install:
 	install -Dm644 packaging/files/usr/share/icons/hicolor/32x32/apps/gpgui.png $(DESTDIR)/usr/share/icons/hicolor/32x32/apps/gpgui.png
 	install -Dm644 packaging/files/usr/share/icons/hicolor/128x128/apps/gpgui.png $(DESTDIR)/usr/share/icons/hicolor/128x128/apps/gpgui.png
 	install -Dm644 packaging/files/usr/share/icons/hicolor/256x256@2/apps/gpgui.png $(DESTDIR)/usr/share/icons/hicolor/256x256@2/apps/gpgui.png
-	install -Dm644 packaging/files/usr/share/polkit-1/actions/com.yuezk.gpgui.policy $(DESTDIR)/usr/share/polkit-1/actions/com.yuezk.gpgui.policy
+	install -Dm644 packaging/files/usr/share/polkit-1/actions/com.atharv.gpgui.policy $(DESTDIR)/usr/share/polkit-1/actions/com.atharv.gpgui.policy
 
 uninstall:
 	@echo "Uninstalling $(PKG_NAME)..."
@@ -160,7 +160,7 @@ uninstall:
 	rm -f $(DESTDIR)/usr/share/icons/hicolor/32x32/apps/gpgui.png
 	rm -f $(DESTDIR)/usr/share/icons/hicolor/128x128/apps/gpgui.png
 	rm -f $(DESTDIR)/usr/share/icons/hicolor/256x256@2/apps/gpgui.png
-	rm -f $(DESTDIR)/usr/share/polkit-1/actions/com.yuezk.gpgui.policy
+	rm -f $(DESTDIR)/usr/share/polkit-1/actions/com.atharv.gpgui.policy
 
 clean-debian:
 	rm -rf .build/deb
@@ -217,7 +217,7 @@ ppa: check-ppa init-debian
 	cd .build/deb/$(PKG) && echo "y" | debuild -e PATH -S -sa -k"$(GPG_KEY_ID)" -p"gpg --batch --passphrase $(GPG_KEY_PASS) --pinentry-mode loopback"
 
 	if [ $(PUBLISH) -eq 1 ]; then \
-		cd .build/deb/$(PKG) && dput ppa:yuezk/globalprotect-openconnect ../*.changes; \
+		cd .build/deb/$(PKG) && dput ppa:madhu-gowda6/globalprotect-openconnect ../*.changes; \
 	else \
 		echo "Skipping ppa publish (PUBLISH=0)"; \
 	fi

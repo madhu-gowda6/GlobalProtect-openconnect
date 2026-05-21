@@ -13,14 +13,14 @@ export function AboutTab() {
         Version v2.5.4
       </Typography>
       <Typography sx={{ fontSize: 13, color: "rgba(255,255,255,0.75)", mb: 0.5 }}>
-        Open-source GUI for{" "}
+        Developed by{" "}
         <Link
-          href="https://github.com/yuezk/GlobalProtect-openconnect"
+          href="https://github.com/madhu-gowda6"
           target="_blank"
           rel="noreferrer"
           sx={{ color: "primary.main" }}
         >
-          GlobalProtect-openconnect
+          Atharv
         </Link>
         .
       </Typography>

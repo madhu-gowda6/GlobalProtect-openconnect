@@ -6,7 +6,7 @@
     "devUrl": "http://localhost:1422",
     "frontendDist": "../dist"
   },
-  "identifier": "com.yuezk.gpgui-replica",
+  "identifier": "com.atharv.gpgui",
   "productName": "GP Connect",
   "app": {
     "withGlobalTauri": false,
@@ -40,6 +40,6 @@
     ],
     "category": "Network",
     "shortDescription": "GlobalProtect VPN client GUI",
-    "longDescription": "Open-source GUI for GlobalProtect-openconnect. Connects to the gpservice daemon over its local WebSocket IPC."
+    "longDescription": "Open-source GlobalProtect VPN client GUI by Atharv. Connects to the gpservice daemon over its local WebSocket IPC."
   }
 }

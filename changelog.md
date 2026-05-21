@@ -7,7 +7,7 @@
 
 ## 2.5.3 - 2026-05-08
 
-- Fix systemd-resolved DNS routing when no split-DNS domains are provided (fix [#604](https://github.com/yuezk/GlobalProtect-openconnect/issues/604)).
+- Fix systemd-resolved DNS routing when no split-DNS domains are provided (fix [#604](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/604)).
 - Log whether systemd-resolved uses server-provided split DNS or global VPN DNS.
 
 ## 2.5.2 - 2026-05-06
@@ -23,8 +23,8 @@
 
 ## 2.5.1 - 2025-12-22
 
-- Fix the `.deb` package installation issue (fix [#563](https://github.com/yuezk/GlobalProtect-openconnect/issues/563))
-- GUI: fix the tray icon size issue on GNOME Flashback (fix [#564](https://github.com/yuezk/GlobalProtect-openconnect/issues/564))
+- Fix the `.deb` package installation issue (fix [#563](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/563))
+- GUI: fix the tray icon size issue on GNOME Flashback (fix [#564](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/564))
 - Improve the HIP report generation logic
 
 ## 2.5.0 - 2025-12-08
@@ -43,23 +43,23 @@
 
 ## 2.4.6 - 2025-10-15
 
-- GUI: support the default configuration file for GUI client (fix [#492](https://github.com/yuezk/GlobalProtect-openconnect/issues/492))
-- GUI: add the option to not reuse the authentication cookies (fix [#540](https://github.com/yuezk/GlobalProtect-openconnect/issues/540))
-- GUI: improve the license validation logic (fix [#502](https://github.com/yuezk/GlobalProtect-openconnect/issues/502))
-- CLI: support the `--browser remote` option to use the remote browser for authentication ([#544](https://github.com/yuezk/GlobalProtect-openconnect/pull/544) by [@dark12](https://github.com/dark12))
-- CLI: fix gpclient disconnect bailing with client is already running issue ([#542](https://github.com/yuezk/GlobalProtect-openconnect/pull/542) by [@zeroepoch](https://github.com/zeroepoch))
-- CLI: fix the `--passwd-on-stdin` reads again on gateway failure ([#546](https://github.com/yuezk/GlobalProtect-openconnect/issues/546))
+- GUI: support the default configuration file for GUI client (fix [#492](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/492))
+- GUI: add the option to not reuse the authentication cookies (fix [#540](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/540))
+- GUI: improve the license validation logic (fix [#502](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/502))
+- CLI: support the `--browser remote` option to use the remote browser for authentication ([#544](https://github.com/madhu-gowda6/GlobalProtect-openconnect/pull/544) by [@dark12](https://github.com/dark12))
+- CLI: fix gpclient disconnect bailing with client is already running issue ([#542](https://github.com/madhu-gowda6/GlobalProtect-openconnect/pull/542) by [@zeroepoch](https://github.com/zeroepoch))
+- CLI: fix the `--passwd-on-stdin` reads again on gateway failure ([#546](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/546))
 
 ## 2.4.5 - 2025-07-16
 
-- GUI/CLI: fix the issue that the custom port is not supported issue (fix [#404](https://github.com/yuezk/GlobalProtect-openconnect/issues/404))
+- GUI/CLI: fix the issue that the custom port is not supported issue (fix [#404](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/404))
 - CLI: add the `--force-dpd` option to specify the interval for DPD (Dead Peer Detection).
 - CLI: add the `-i/--interface` option to specify the interface to use.
 
 ## 2.4.4 - 2025-02-09
 
-- GUI: fix multiple tray icons issue (fix [#464](https://github.com/yuezk/GlobalProtect-openconnect/issues/464))
-- CLI: check the cli running state before running the `gpclient` command (fix [#447](https://github.com/yuezk/GlobalProtect-openconnect/issues/447))
+- GUI: fix multiple tray icons issue (fix [#464](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/464))
+- CLI: check the cli running state before running the `gpclient` command (fix [#447](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/447))
 
 ## 2.4.3 - 2025-01-21
 
@@ -67,7 +67,7 @@
 
 ## 2.4.2 - 2025-01-20
 
-- Disconnect the VPN when sleep (fix [#166](https://github.com/yuezk/GlobalProtect-openconnect/issues/166), [#267](https://github.com/yuezk/GlobalProtect-openconnect/issues/267))
+- Disconnect the VPN when sleep (fix [#166](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/166), [#267](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/267))
 
 ## 2.4.1 - 2025-01-09
 
@@ -83,14 +83,14 @@
 
 ## 2.3.9 - 2024-11-02
 
-- Enhance the OpenSSL compatibility mode (fix [#437](https://github.com/yuezk/GlobalProtect-openconnect/issues/437))
+- Enhance the OpenSSL compatibility mode (fix [#437](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/437))
 
 ## 2.3.8 - 2024-10-31
 
-- GUI: support configure the external browser to use for authentication (fix [#423](https://github.com/yuezk/GlobalProtect-openconnect/issues/423))
-- GUI: add option to remember the credential (fix [#420](https://github.com/yuezk/GlobalProtect-openconnect/issues/420))
-- GUI: fix the credential not saved issue (fix [#420](https://github.com/yuezk/GlobalProtect-openconnect/issues/420))
-- CLI: fix the default browser detection issue (fix [#416](https://github.com/yuezk/GlobalProtect-openconnect/issues/416))
+- GUI: support configure the external browser to use for authentication (fix [#423](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/423))
+- GUI: add option to remember the credential (fix [#420](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/420))
+- GUI: fix the credential not saved issue (fix [#420](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/420))
+- CLI: fix the default browser detection issue (fix [#416](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/416))
 
 ## 2.3.7 - 2024-08-16
 
@@ -112,8 +112,8 @@
 
 ## 2.3.4 - 2024-07-08
 
-- Support the Internal Host Detection (fix [#377](https://github.com/yuezk/GlobalProtect-openconnect/issues/377))
-- CLI: support pass the password from stdin (fix [#381](https://github.com/yuezk/GlobalProtect-openconnect/issues/381))
+- Support the Internal Host Detection (fix [#377](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/377))
+- CLI: support pass the password from stdin (fix [#381](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/381))
 
 ## 2.3.3 - 2024-06-23
 
@@ -122,9 +122,9 @@
 
 ## 2.3.2 - 2024-06-17
 
-- Fix the CAS callback parsing issue (fix [#372](https://github.com/yuezk/GlobalProtect-openconnect/issues/372))
-- CLI: fix the `/tmp/gpauth.html` deletion issue (fix [#366](https://github.com/yuezk/GlobalProtect-openconnect/issues/366))
-- GUI: fix the license not working after reboot (fix [#376](https://github.com/yuezk/GlobalProtect-openconnect/issues/376))
+- Fix the CAS callback parsing issue (fix [#372](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/372))
+- CLI: fix the `/tmp/gpauth.html` deletion issue (fix [#366](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/366))
+- GUI: fix the license not working after reboot (fix [#376](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/376))
 - GUI: add the license activation management link
 
 ## 2.3.1 - 2024-05-21
@@ -133,30 +133,30 @@
 
 ## 2.3.0 - 2024-05-20
 
-- Support client certificate authentication (fix [#363](https://github.com/yuezk/GlobalProtect-openconnect/issues/363))
-- Support `--disable-ipv6`, `--reconnect-timeout` parameters (related: [#364](https://github.com/yuezk/GlobalProtect-openconnect/issues/364))
-- Use default labels if label fields are missing in prelogin response (fix [#357](https://github.com/yuezk/GlobalProtect-openconnect/issues/357))
+- Support client certificate authentication (fix [#363](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/363))
+- Support `--disable-ipv6`, `--reconnect-timeout` parameters (related: [#364](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/364))
+- Use default labels if label fields are missing in prelogin response (fix [#357](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/357))
 
 ## 2.2.1 - 2024-05-07
 
-- GUI: Restore the default browser auth implementation (fix [#360](https://github.com/yuezk/GlobalProtect-openconnect/issues/360))
+- GUI: Restore the default browser auth implementation (fix [#360](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/360))
 
 ## 2.2.0 - 2024-04-30
 
-- CLI: support authentication with external browser (fix [#298](https://github.com/yuezk/GlobalProtect-openconnect/issues/298))
+- CLI: support authentication with external browser (fix [#298](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/298))
 - GUI: support using file-based storage when the system keyring is not available.
 
 ## 2.1.4 - 2024-04-10
 
-- Support MFA authentication (fix [#343](https://github.com/yuezk/GlobalProtect-openconnect/issues/343))
+- Support MFA authentication (fix [#343](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/343))
 - Improve the Gateway switcher UI
 
 ## 2.1.3 - 2024-04-07
 
-- Support CAS authentication (fix [#339](https://github.com/yuezk/GlobalProtect-openconnect/issues/339))
-- CLI: Add `--as-gateway` option to connect as gateway directly (fix [#318](https://github.com/yuezk/GlobalProtect-openconnect/issues/318))
-- GUI: Support connect the gateway directly (fix [#318](https://github.com/yuezk/GlobalProtect-openconnect/issues/318))
-- GUI: Add an option to use symbolic tray icon (fix [#341](https://github.com/yuezk/GlobalProtect-openconnect/issues/341))
+- Support CAS authentication (fix [#339](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/339))
+- CLI: Add `--as-gateway` option to connect as gateway directly (fix [#318](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/318))
+- GUI: Support connect the gateway directly (fix [#318](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/318))
+- GUI: Add an option to use symbolic tray icon (fix [#341](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/341))
 
 ## 2.1.2 - 2024-03-29
 

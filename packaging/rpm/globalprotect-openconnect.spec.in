@@ -5,7 +5,7 @@ Summary:        A GlobalProtect VPN client powered by OpenConnect
 Group:          Productivity/Networking/PPP
 
 License:        GPL-3.0
-URL:            https://github.com/yuezk/GlobalProtect-openconnect
+URL:            https://github.com/madhu-gowda6/GlobalProtect-openconnect
 Source:         @SOURCE@
 
 BuildRequires:  make
@@ -69,7 +69,7 @@ make build
 %{_datadir}/icons/hicolor/128x128/apps/gpgui.png
 %{_datadir}/icons/hicolor/256x256@2/apps/gpgui.png
 %{_datadir}/icons/hicolor/scalable/apps/gpgui.svg
-%{_datadir}/polkit-1/actions/com.yuezk.gpgui.policy
+%{_datadir}/polkit-1/actions/com.atharv.gpgui.policy
 
 %dir /usr/lib/NetworkManager
 %dir /usr/lib/NetworkManager/dispatcher.d
@@ -93,5 +93,4 @@ make build
 %dir %{_datadir}/polkit-1/actions
 
 %changelog
-* @DATE@ Kevin Yue <k3vinyue@gmail.com> - @VERSION@
 - Bugfix and improvements

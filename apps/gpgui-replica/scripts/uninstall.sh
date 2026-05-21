@@ -12,7 +12,7 @@
 #   /usr/lib/NetworkManager/dispatcher.d/gpclient-nm-hook
 #   /usr/share/applications/gpgui.desktop
 #   /usr/share/icons/hicolor/{scalable,32x32,128x128,256x256@2}/apps/gpgui.*
-#   /usr/share/polkit-1/actions/com.yuezk.gpgui.policy
+#   /usr/share/polkit-1/actions/com.atharv.gpgui.policy
 #
 # It does NOT touch the proprietary *.proprietary.bak files in /usr/bin/.
 # To restore the proprietary binaries, run:
@@ -61,7 +61,7 @@ rm -f /usr/share/icons/hicolor/128x128/apps/gpgui.png
 rm -f /usr/share/icons/hicolor/256x256@2/apps/gpgui.png
 
 echo "Removing polkit policy..."
-rm -f /usr/share/polkit-1/actions/com.yuezk.gpgui.policy
+rm -f /usr/share/polkit-1/actions/com.atharv.gpgui.policy
 
 # Refresh caches (best-effort).
 update-desktop-database -q /usr/share/applications 2>/dev/null || true

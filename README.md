@@ -100,14 +100,14 @@ gpclient launch-gui
 
 > [!Note]
 >
-> For older Linux distributions, use [v2.3.13](https://github.com/yuezk/GlobalProtect-openconnect/releases/tag/v2.3.13) instead of the latest release. It provides release assets for common distro families, including Debian/Ubuntu (`.deb`), Arch Linux / Manjaro (`.pkg.tar.zst`), RPM-based distros such as Fedora / RHEL / Rocky / AlmaLinux / CentOS (`.rpm`), and generic Linux tarballs (`.bin.tar.xz`).
+> For older Linux distributions, use [v2.3.13](https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases/tag/v2.3.13) instead of the latest release. It provides release assets for common distro families, including Debian/Ubuntu (`.deb`), Arch Linux / Manjaro (`.pkg.tar.zst`), RPM-based distros such as Fedora / RHEL / Rocky / AlmaLinux / CentOS (`.rpm`), and generic Linux tarballs (`.bin.tar.xz`).
 
 ### Debian / Ubuntu
 
 #### Option 1: Install from PPA (Recommended)
 
 ```bash
-sudo add-apt-repository ppa:yuezk/globalprotect-openconnect
+sudo add-apt-repository ppa:madhu-gowda6/globalprotect-openconnect
 sudo apt-get update
 sudo apt-get install globalprotect-openconnect
 ```
@@ -121,7 +121,7 @@ sudo apt-get install globalprotect-openconnect
 
 #### Option 2: Install from DEB Package
 
-Download the latest `.deb` package from the [releases](https://github.com/yuezk/GlobalProtect-openconnect/releases) page, then install:
+Download the latest `.deb` package from the [releases](https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases) page, then install:
 
 ```bash
 sudo apt install --fix-broken globalprotect-openconnect_*.deb
@@ -155,7 +155,7 @@ sudo pacman -S libappindicator globalprotect-openconnect
 
 #### Option 3: Install from Package
 
-Download the latest package from the [releases](https://github.com/yuezk/GlobalProtect-openconnect/releases) page, then install:
+Download the latest package from the [releases](https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases) page, then install:
 
 ```bash
 sudo pacman -U globalprotect-openconnect-*.pkg.tar.zst
@@ -165,10 +165,10 @@ sudo pacman -U globalprotect-openconnect-*.pkg.tar.zst
 
 #### Install from COPR
 
-The package is available on [COPR](https://copr.fedorainfracloud.org/coprs/yuezk/globalprotect-openconnect/) for RPM-based distributions:
+The package is available on [COPR](https://copr.fedorainfracloud.org/coprs/madhu-gowda6/globalprotect-openconnect/) for RPM-based distributions:
 
 ```bash
-sudo dnf copr enable yuezk/globalprotect-openconnect
+sudo dnf copr enable madhu-gowda6/globalprotect-openconnect
 sudo dnf install globalprotect-openconnect
 ```
 
@@ -176,13 +176,13 @@ sudo dnf install globalprotect-openconnect
 
 #### Install from OBS (openSUSE Build Service)
 
-Packages are available on the [openSUSE Build Service](https://build.opensuse.org/package/show/home:yuezk/globalprotect-openconnect). Follow the [installation instructions](https://software.opensuse.org//download.html?project=home%3Ayuezk&package=globalprotect-openconnect) for your distribution.
+Packages are available on the [openSUSE Build Service](https://build.opensuse.org/package/show/home:madhu-gowda6/globalprotect-openconnect). Follow the [installation instructions](https://software.opensuse.org//download.html?project=home%3Amadhu-gowda6&package=globalprotect-openconnect) for your distribution.
 
 ### Other RPM-based Distributions
 
 #### Install from RPM Package
 
-Download the latest RPM package from the [releases](https://github.com/yuezk/GlobalProtect-openconnect/releases) page:
+Download the latest RPM package from the [releases](https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases) page:
 
 ```bash
 sudo rpm -i globalprotect-openconnect-*.rpm
@@ -190,7 +190,7 @@ sudo rpm -i globalprotect-openconnect-*.rpm
 
 ### Alpine Linux
 
-Download the latest `.apk` package from the [releases](https://github.com/yuezk/GlobalProtect-openconnect/releases) page, then install:
+Download the latest `.apk` package from the [releases](https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases) page, then install:
 
 ```bash
 sudo apk add --allow-untrusted globalprotect-openconnect-*.apk
@@ -215,7 +215,7 @@ This repository includes a flake for NixOS integration.
 If you want a quick user-level install, you can install it directly from the flake:
 
 ```bash
-nix profile add github:yuezk/GlobalProtect-openconnect
+nix profile add github:madhu-gowda6/GlobalProtect-openconnect
 ```
 
 If you want it managed as part of your NixOS system configuration, use the steps below.
@@ -228,7 +228,7 @@ If you want it managed as part of your NixOS system configuration, use the steps
     {
       inputs = {
         # ... other inputs
-        globalprotect-openconnect.url = "github:yuezk/GlobalProtect-openconnect";
+        globalprotect-openconnect.url = "github:madhu-gowda6/GlobalProtect-openconnect";
       };
 
       outputs = { nixpkgs, ... }@inputs: {
@@ -268,7 +268,7 @@ If you want it managed as part of your NixOS system configuration, use the steps
 The official Docker image provides the CLI tools on Alpine Linux:
 
 ```bash
-docker pull yuezk/globalprotect-openconnect:<version>
+docker pull madhu-gowda6/globalprotect-openconnect:<version>
 ```
 
 Release images are tagged as `vX.Y.Z`, `X.Y.Z`, and `latest`.
@@ -277,7 +277,7 @@ Run it with access to the TUN device:
 
 ```bash
 docker run --rm -it --cap-add=NET_ADMIN --device=/dev/net/tun \
-  yuezk/globalprotect-openconnect:<version> \
+  madhu-gowda6/globalprotect-openconnect:<version> \
   connect <portal> --cookie-on-stdin
 ```
 
@@ -285,7 +285,7 @@ For browser authentication in a headless environment, use remote browser authent
 
 ```bash
 docker run --rm -it --cap-add=NET_ADMIN --device=/dev/net/tun \
-  yuezk/globalprotect-openconnect:<version> \
+  madhu-gowda6/globalprotect-openconnect:<version> \
   connect <portal> --browser remote
 ```
 
@@ -293,7 +293,7 @@ On a Linux host, add host networking if the VPN routes should affect the host ne
 
 ```bash
 docker run --rm -it --network host --cap-add=NET_ADMIN --device=/dev/net/tun \
-  yuezk/globalprotect-openconnect:<version> \
+  madhu-gowda6/globalprotect-openconnect:<version> \
   connect <portal> --browser remote
 ```
 
@@ -302,10 +302,10 @@ Without `--network host`, the VPN connection stays inside the container's networ
 Alternatively, pipe `gpauth` remote-browser output into `gpclient`:
 
 ```bash
-docker run --rm -it --entrypoint gpauth yuezk/globalprotect-openconnect:<version> \
+docker run --rm -it --entrypoint gpauth madhu-gowda6/globalprotect-openconnect:<version> \
   <portal> --browser remote 2>/dev/null \
   | docker run --rm -i --cap-add=NET_ADMIN --device=/dev/net/tun \
-      yuezk/globalprotect-openconnect:<version> \
+      madhu-gowda6/globalprotect-openconnect:<version> \
       connect <portal> --cookie-on-stdin
 ```
 
@@ -321,7 +321,7 @@ The image includes `gpclient` and `gpauth` only. It does not include embedded we
    - `libayatana-appindicator` or `libappindicator-gtk3`
 
 2. **Download and extract:**
-   Download `globalprotect-openconnect_${version}_${arch}.bin.tar.xz` from the [releases](https://github.com/yuezk/GlobalProtect-openconnect/releases) page:
+   Download `globalprotect-openconnect_${version}_${arch}.bin.tar.xz` from the [releases](https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases) page:
    ```bash
    tar -xJf globalprotect-openconnect_${version}_${arch}.bin.tar.xz
    ```
@@ -349,7 +349,7 @@ This project includes a DevContainer configuration that provides a consistent, r
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yuezk/GlobalProtect-openconnect.git
+   git clone https://github.com/madhu-gowda6/GlobalProtect-openconnect.git
    cd GlobalProtect-openconnect
    git submodule update --init --recursive
    ```
@@ -400,7 +400,7 @@ This project includes a DevContainer configuration that provides a consistent, r
 
 1. **Download source code:**
 
-   Download `globalprotect-openconnect-${version}.tar.gz` from the [releases](https://github.com/yuezk/GlobalProtect-openconnect/releases) page.
+   Download `globalprotect-openconnect-${version}.tar.gz` from the [releases](https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases) page.
 
 2. **Extract and build:**
    ```bash
@@ -437,7 +437,7 @@ Verify the CLI client is working correctly:
 
 **Solution 2:** Install the `gnome-keyring` package and restart your system.
 
-See related issues: [#321](https://github.com/yuezk/GlobalProtect-openconnect/issues/321), [#316](https://github.com/yuezk/GlobalProtect-openconnect/issues/316)
+See related issues: [#321](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/321), [#316](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/316)
 
 ### Q: How do I fix the "cannot open display" error when using CLI?
 
@@ -447,7 +447,7 @@ If you encounter `(gpauth:18869): Gtk-WARNING **: 10:33:37.566: cannot open disp
 sudo -E gpclient connect <portal>
 ```
 
-See related issue: [#316](https://github.com/yuezk/GlobalProtect-openconnect/issues/316)
+See related issue: [#316](https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues/316)
 
 ## Licensing
 

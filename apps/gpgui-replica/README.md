@@ -1,9 +1,10 @@
-# gpgui-replica
+# GP Connect
 
-Open-source replica of the proprietary `gpgui` v2.5.4 GUI shipped with
-GlobalProtect-openconnect. Drives the existing `gpservice` daemon over its
-local WebSocket IPC, so it is fully interoperable with the rest of the
-workspace (`gpclient`, `gpservice`, `gpauth`).
+Open-source GlobalProtect VPN client GUI by Atharv.
+Drives the `gpservice` daemon over its local WebSocket IPC, fully
+interoperable with `gpclient`, `gpservice`, and `gpauth`.
+
+**Author:** [Atharv](https://github.com/madhu-gowda6)
 
 ## Status
 

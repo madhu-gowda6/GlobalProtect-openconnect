@@ -4,7 +4,7 @@
 
 set -e
 
-REPO="yuezk/GlobalProtect-openconnect"
+REPO="madhu-gowda6/GlobalProtect-openconnect"
 TAG=$1
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"

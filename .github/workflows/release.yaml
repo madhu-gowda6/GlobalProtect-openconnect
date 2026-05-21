@@ -111,7 +111,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_PAT }}
       run: |
-        gh -R yuezk/GlobalProtect-openconnect \
+        gh -R madhu-gowda6/GlobalProtect-openconnect \
           release download ${{ inputs.tag }} \
           --pattern '*[^offline].tar.gz' \
           --dir build-${{ matrix.package }}
@@ -126,14 +126,14 @@ jobs:
           -e COREPACK_INTEGRITY_KEYS=0 \
           -e LIBXML2_STATIC=1 \
           -e INCLUDE_GUI=1 \
-          yuezk/gpdev:${{ matrix.package }}-builder-tauri2
+          madhu-gowda6/gpdev:${{ matrix.package }}-builder-tauri2
 
     - name: Install ${{ matrix.package }} package in Docker
       run: |
         docker run --pull=always --rm \
           -e COREPACK_INTEGRITY_KEYS=0 \
           -v $(pwd)/build-${{ matrix.package }}:/workspace \
-          yuezk/gpdev:${{ matrix.package }}-builder-tauri2 \
+          madhu-gowda6/gpdev:${{ matrix.package }}-builder-tauri2 \
           bash install.sh
 
     - name: Upload ${{ matrix.package }} package
@@ -169,7 +169,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_PAT }}
       run: |
-        gh -R yuezk/GlobalProtect-openconnect \
+        gh -R madhu-gowda6/GlobalProtect-openconnect \
           release download ${{ inputs.tag }} \
           --pattern '*[^offline].tar.gz' \
           --dir docker-image
@@ -189,10 +189,10 @@ jobs:
         context: docker-image/source
         file: docker-image/source/packaging/docker/alpine/Dockerfile
         platforms: ${{ matrix.platform }}
-        outputs: type=image,name=yuezk/globalprotect-openconnect,push-by-digest=true,name-canonical=true,push=true
+        outputs: type=image,name=madhu-gowda6/globalprotect-openconnect,push-by-digest=true,name-canonical=true,push=true
     - name: Verify CLI tools
       env:
-        IMAGE: yuezk/globalprotect-openconnect
+        IMAGE: madhu-gowda6/globalprotect-openconnect
         DIGEST: ${{ steps.build.outputs.digest }}
       run: |
         docker run --rm "$IMAGE@$DIGEST" --help
@@ -233,7 +233,7 @@ jobs:
     - name: Publish Docker manifest
       working-directory: /tmp/digests
       env:
-        IMAGE: yuezk/globalprotect-openconnect
+        IMAGE: madhu-gowda6/globalprotect-openconnect
         TAG: ${{ inputs.tag }}
       run: |
         VERSION="${TAG#v}"

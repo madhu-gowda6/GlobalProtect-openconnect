@@ -1,6 +1,6 @@
 [package]
 name = "gpgui-replica"
-description = "Open-source GUI for GlobalProtect-openconnect (gpgui v2.5.4 replica)"
+description = "Open-source GlobalProtect VPN client GUI by Atharv"
 rust-version.workspace = true
 authors.workspace = true
 version.workspace = true

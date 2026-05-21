@@ -7,7 +7,7 @@ export function LicenseTab() {
         License
       </Typography>
       <Typography sx={{ fontSize: 13, color: "rgba(255,255,255,0.75)", mb: 1.5 }}>
-        This is the open-source replica GUI for GlobalProtect-openconnect. All
+        This is an open-source GlobalProtect VPN client by Atharv. All
         features are enabled — no license key required.
       </Typography>
       <Typography sx={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
