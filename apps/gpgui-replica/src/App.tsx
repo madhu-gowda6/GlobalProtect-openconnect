@@ -23,9 +23,11 @@ import {
   cancelMfa,
   connectPortal,
   disconnectVpn,
+  getSettings,
   getStatus,
   openSettings,
   quitApp,
+  Settings,
   submitCredentials,
   submitMfa,
 } from "./tauri/commands";
@@ -38,6 +40,8 @@ export function App() {
   const [status, setStatus] = useState<ConnectionStatus>("disconnected");
   const [serviceUp, setServiceUp] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+  const [recentPortals, setRecentPortals] = useState<string[]>([]);
+  const settingsRef = useRef<Settings | null>(null);
 
   // Auth phase runs in our process before gpservice takes over the state.
   const [authPhase, setAuthPhase] = useState<string | null>(null);
@@ -50,6 +54,17 @@ export function App() {
 
   useEffect(() => {
     const unlisteners: Array<() => void> = [];
+
+    // Load saved settings (for connect options + recent portals)
+    getSettings()
+      .then((s) => {
+        settingsRef.current = s;
+        setRecentPortals(s.recentPortals);
+        if (s.recentPortals.length > 0 && !portal) {
+          setPortal(s.recentPortals[0]);
+        }
+      })
+      .catch(console.error);
 
     onVpnState((s) => {
       const next = vpnStateToStatus(s);
@@ -122,7 +137,15 @@ export function App() {
     setError(null);
     setAuthPhase("Starting...");
     try {
-      await connectPortal(portal);
+      const s = settingsRef.current;
+      await connectPortal(portal, {
+        ignoreTlsErrors: s?.ignoreTlsErrors,
+        hip: s?.hipEnabled,
+        os: s?.os,
+        osVersion: s?.osVersion || undefined,
+        clientVersion: s?.clientVersion || undefined,
+        userAgent: s?.userAgent || undefined,
+      });
       // Success path: gpservice now emits VpnState; auth phase clears on the
       // first non-disconnected state event.
     } catch (e) {
@@ -251,6 +274,8 @@ export function App() {
             value={portal}
             onChange={setPortal}
             disabled={status !== "disconnected" || authBusy}
+            recentPortals={recentPortals}
+            onSelectRecent={(p) => setPortal(p)}
           />
         </Box>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   FormControl,
@@ -10,30 +10,17 @@ import {
 } from "@mui/material";
 import { InfoBanner } from "../InfoBanner";
 import { CheckboxRow } from "../CheckboxRow";
+import { Settings } from "../../../tauri/commands";
 
 type ClientOs = "Linux" | "Windows" | "Mac";
 
-// Default values mirror what the screenshots show, sourced from
-// common::constants::GP_USER_AGENT / GP_CLIENT_VERSION and the host OS.
-const DEFAULT_OS_VERSION = "Linux Ubuntu 24.04.4 LTS";
-const DEFAULT_CLIENT_VERSION = "6.3.0-33";
-const DEFAULT_VPNC_SCRIPT = "/usr/libexec/gpclient/vpnc-script";
-const DEFAULT_HIP_SCRIPT = "/usr/libexec/gpclient/hipreport.sh";
+type Props = {
+  settings: Settings;
+  onChange: (patch: Partial<Settings>) => void;
+};
 
-export function ConnectionTab() {
-  const [clientOs, setClientOs] = useState<ClientOs>("Linux");
-  const [osVersion, setOsVersion] = useState(DEFAULT_OS_VERSION);
-  const [clientVersion, setClientVersion] = useState(DEFAULT_CLIENT_VERSION);
-  const [vpncScript, setVpncScript] = useState(DEFAULT_VPNC_SCRIPT);
-  const [localHostname, setLocalHostname] = useState("");
-  const [reconnectTimeout, setReconnectTimeout] = useState("");
-  const [mtu, setMtu] = useState("");
-  const [forceDpd, setForceDpd] = useState("");
-  const [submitHip, setSubmitHip] = useState(true);
-  const [hipScript, setHipScript] = useState(DEFAULT_HIP_SCRIPT);
-  const [disableIpv6, setDisableIpv6] = useState(false);
-
-  const userAgent = `PAN GlobalProtect/${clientVersion} (${osVersion})`;
+export function ConnectionTab({ settings, onChange }: Props) {
+  const userAgent = `PAN GlobalProtect/${settings.clientVersion} (${settings.osVersion})`;
 
   return (
     <Box>
@@ -45,8 +32,8 @@ export function ConnectionTab() {
       <FormControl sx={{ mb: 2.5 }}>
         <RadioGroup
           row
-          value={clientOs}
-          onChange={(_, v) => setClientOs(v as ClientOs)}
+          value={settings.os}
+          onChange={(_, v) => onChange({ os: v })}
         >
           {(["Linux", "Windows", "Mac"] as ClientOs[]).map((os) => (
             <FormControlLabel
@@ -63,49 +50,49 @@ export function ConnectionTab() {
         </RadioGroup>
       </FormControl>
 
-      <TextRow label="OS Version" value={osVersion} onChange={setOsVersion} />
+      <TextRow label="OS Version" value={settings.osVersion} onChange={(v) => onChange({ osVersion: v })} />
       <TextRow
         label="Client Version"
-        value={clientVersion}
-        onChange={setClientVersion}
+        value={settings.clientVersion}
+        onChange={(v) => onChange({ clientVersion: v })}
       />
       <TextRow label="User Agent" value={userAgent} readOnly />
-      <TextRow label="VPNC Script" value={vpncScript} onChange={setVpncScript} />
+      <TextRow label="VPNC Script" value={settings.vpncScript} onChange={(v) => onChange({ vpncScript: v })} />
       <TextRow
         label="Local Hostname"
-        value={localHostname}
-        onChange={setLocalHostname}
+        value={settings.localHostname}
+        onChange={(v) => onChange({ localHostname: v })}
         placeholder="The '--local-hostname' option of openconnect"
       />
       <TextRow
         label="Reconnect Timeout"
-        value={reconnectTimeout}
-        onChange={setReconnectTimeout}
+        value={settings.reconnectTimeout}
+        onChange={(v) => onChange({ reconnectTimeout: v })}
         placeholder="The '--reconnect-timeout' option of openconnect (default: 300 seconds)"
       />
       <TextRow
         label="MTU"
-        value={mtu}
-        onChange={setMtu}
+        value={settings.mtu}
+        onChange={(v) => onChange({ mtu: v })}
         placeholder="Request MTU from server (legacy servers only)"
       />
       <TextRow
         label="Force DPD"
-        value={forceDpd}
-        onChange={setForceDpd}
+        value={settings.forceDpd}
+        onChange={(v) => onChange({ forceDpd: v })}
         placeholder="The '--force-dpd' option of openconnect (in seconds)"
       />
 
       <CheckboxRow
         label="Submit HIP Report"
-        checked={submitHip}
-        onChange={setSubmitHip}
+        checked={settings.hipEnabled}
+        onChange={(v) => onChange({ hipEnabled: v })}
       >
-        {submitHip && (
+        {settings.hipEnabled && (
           <TextRow
             label="Custom HIP Script Location"
-            value={hipScript}
-            onChange={setHipScript}
+            value={settings.hipScript}
+            onChange={(v) => onChange({ hipScript: v })}
             embed
           />
         )}
@@ -113,8 +100,8 @@ export function ConnectionTab() {
 
       <CheckboxRow
         label="Disable IPv6"
-        checked={disableIpv6}
-        onChange={setDisableIpv6}
+        checked={settings.disableIpv6}
+        onChange={(v) => onChange({ disableIpv6: v })}
       />
     </Box>
   );

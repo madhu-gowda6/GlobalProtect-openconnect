@@ -1,12 +1,14 @@
-import { useState } from "react";
 import { Box } from "@mui/material";
 import { InfoBanner } from "../InfoBanner";
 import { CheckboxRow } from "../CheckboxRow";
+import { Settings } from "../../../tauri/commands";
 
-export function SslTlsTab() {
-  const [opensslLegacy, setOpensslLegacy] = useState(false);
-  const [ignoreTlsErrors, setIgnoreTlsErrors] = useState(false);
+type Props = {
+  settings: Settings;
+  onChange: (patch: Partial<Settings>) => void;
+};
 
+export function SslTlsTab({ settings, onChange }: Props) {
   return (
     <Box>
       <InfoBanner variant="warning">
@@ -16,14 +18,14 @@ export function SslTlsTab() {
       <CheckboxRow
         label="Enable OpenSSL Legacy Mode"
         description="Uses extended compatibility mode for OpenSSL operations to support a broader range of systems and formats."
-        checked={opensslLegacy}
-        onChange={setOpensslLegacy}
+        checked={settings.opensslLegacy}
+        onChange={(v) => onChange({ opensslLegacy: v })}
       />
       <CheckboxRow
         label="Ignore TLS Errors"
         description="Enable this if your server is using a self-signed or invalid certificate."
-        checked={ignoreTlsErrors}
-        onChange={setIgnoreTlsErrors}
+        checked={settings.ignoreTlsErrors}
+        onChange={(v) => onChange({ ignoreTlsErrors: v })}
       />
     </Box>
   );

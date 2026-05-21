@@ -25,6 +25,7 @@ serde.workspace = true
 serde_json.workspace = true
 base64.workspace = true
 clap.workspace = true
+dirs = "6"
 
 [features]
 default = ["tauri/custom-protocol"]

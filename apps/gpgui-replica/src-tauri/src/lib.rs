@@ -1,5 +1,6 @@
 mod connect;
 mod ipc;
+mod settings;
 
 use anyhow::{Context, Result};
 use base64::{Engine, engine::general_purpose::STANDARD as B64};
@@ -7,6 +8,7 @@ use clap::Parser;
 use gpapi::service::vpn_state::VpnState;
 use ipc::IpcHandle;
 use serde::Serialize;
+use settings::Settings;
 use tauri::{AppHandle, Manager, State, WebviewUrl, WebviewWindowBuilder};
 use tokio::io::AsyncReadExt;
 
@@ -113,6 +115,18 @@ fn quit_app(app: AppHandle) {
   app.exit(0);
 }
 
+#[tauri::command]
+async fn get_settings() -> Result<Settings, String> {
+  Ok(settings::load_settings().await)
+}
+
+#[tauri::command]
+async fn save_settings(settings: Settings) -> Result<(), String> {
+  settings::save_settings_to_disk(&settings)
+    .await
+    .map_err(|e| e.to_string())
+}
+
 async fn read_api_key(cli: &Cli) -> Result<Vec<u8>> {
   if cli.api_key_on_stdin {
     let mut buf = String::new();
@@ -152,6 +166,8 @@ pub async fn run() {
       submit_credentials,
       cancel_credentials,
       get_status,
+      get_settings,
+      save_settings,
     ])
     .setup(move |app| {
       log::info!("gpgui-replica starting");

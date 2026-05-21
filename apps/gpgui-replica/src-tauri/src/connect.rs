@@ -293,5 +293,9 @@ pub async fn connect_portal(
   }
 
   handle.send(WsRequest::Connect(Box::new(req))).await?;
+
+  // Persist portal in recent list (best-effort, don't fail the connect).
+  let _ = crate::settings::add_recent_portal(&portal).await;
+
   Ok(())
 }
