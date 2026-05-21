@@ -13,6 +13,7 @@ jobs:
   build-deb:
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
         include:
           - arch: amd64
@@ -89,6 +90,7 @@ jobs:
           CC: aarch64-linux-gnu-gcc
           CXX: aarch64-linux-gnu-g++
         run: |
+          rustup target add aarch64-unknown-linux-gnu
           cargo build --release --target ${{ matrix.rust_target }} \
             -p gpservice -p gpauth -p gpclient -p gpgui-replica
 
