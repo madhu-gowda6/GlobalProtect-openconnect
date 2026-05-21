@@ -32,7 +32,7 @@ import {
   submitMfa,
 } from "./tauri/commands";
 
-const APP_VERSION = "v2.5.4";
+const APP_VERSION = "v1.0.0";
 
 export function App() {
   const [portal, setPortal] = useState("");

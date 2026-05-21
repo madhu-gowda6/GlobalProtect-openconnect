@@ -10,7 +10,7 @@ export function AboutTab() {
         <strong>GP Connect</strong> (gpgui-replica)
       </Typography>
       <Typography sx={{ fontSize: 13, color: "rgba(255,255,255,0.75)", mb: 1.5 }}>
-        Version v2.5.4
+        Version v1.0.0
       </Typography>
       <Typography sx={{ fontSize: 13, color: "rgba(255,255,255,0.75)", mb: 0.5 }}>
         Developed by{" "}

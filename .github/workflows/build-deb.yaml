@@ -1,0 +1,243 @@
+name: Build .deb packages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  PKG_NAME: globalprotect-openconnect
+  PKG_VERSION: "1.0.0"
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+            rust_target: x86_64-unknown-linux-gnu
+            dpkg_arch: amd64
+          - arch: arm64
+            rust_target: aarch64-unknown-linux-gnu
+            dpkg_arch: arm64
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Build frontend
+        working-directory: apps/gpgui-replica
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+
+      - name: Install system dependencies (amd64)
+        if: matrix.arch == 'amd64'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential autoconf automake libtool pkg-config gettext \
+            libgnutls28-dev libp11-kit-dev nettle-dev libgmp-dev liblz4-dev \
+            zlib1g-dev libxml2-dev \
+            libwebkit2gtk-4.1-dev libxdo-dev libssl-dev \
+            libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Build binaries (amd64)
+        if: matrix.arch == 'amd64'
+        run: |
+          cargo build --release -p gpservice -p gpauth -p gpclient -p gpgui-replica
+
+      - name: Install cross-compilation dependencies (arm64)
+        if: matrix.arch == 'arm64'
+        run: |
+          sudo dpkg --add-architecture arm64
+          # Add arm64 sources
+          sudo sed -i 's/^deb /deb [arch=amd64] /' /etc/apt/sources.list
+          echo "deb [arch=arm64] http://ports.ubuntu.com/ jammy main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+          echo "deb [arch=arm64] http://ports.ubuntu.com/ jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+          sudo apt-get update
+          sudo apt-get install -y \
+            gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
+            build-essential autoconf automake libtool pkg-config gettext \
+            libgnutls28-dev:arm64 libp11-kit-dev:arm64 nettle-dev:arm64 \
+            libgmp-dev:arm64 liblz4-dev:arm64 zlib1g-dev:arm64 libxml2-dev:arm64 \
+            libwebkit2gtk-4.1-dev:arm64 libxdo-dev:arm64 libssl-dev:arm64 \
+            libayatana-appindicator3-dev:arm64 librsvg2-dev:arm64
+
+      - name: Build binaries (arm64)
+        if: matrix.arch == 'arm64'
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+          PKG_CONFIG_PATH: /usr/lib/aarch64-linux-gnu/pkgconfig
+          PKG_CONFIG_SYSROOT_DIR: /
+          PKG_CONFIG_ALLOW_CROSS: "1"
+          CC: aarch64-linux-gnu-gcc
+          CXX: aarch64-linux-gnu-g++
+        run: |
+          cargo build --release --target ${{ matrix.rust_target }} \
+            -p gpservice -p gpauth -p gpclient -p gpgui-replica
+
+      - name: Determine binary path
+        id: binpath
+        run: |
+          if [ "${{ matrix.arch }}" = "amd64" ]; then
+            echo "dir=target/release" >> "$GITHUB_OUTPUT"
+          else
+            echo "dir=target/${{ matrix.rust_target }}/release" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Package .deb
+        run: |
+          STAGE="/tmp/${PKG_NAME}_${PKG_VERSION}_${{ matrix.dpkg_arch }}"
+          BIN="${{ steps.binpath.outputs.dir }}"
+          FILES="packaging/files"
+
+          # Create directory structure
+          mkdir -p "$STAGE/DEBIAN" \
+            "$STAGE/usr/bin" \
+            "$STAGE/usr/libexec/gpclient" \
+            "$STAGE/usr/lib/NetworkManager/dispatcher.d/pre-down.d" \
+            "$STAGE/usr/share/applications" \
+            "$STAGE/usr/share/icons/hicolor/scalable/apps" \
+            "$STAGE/usr/share/icons/hicolor/32x32/apps" \
+            "$STAGE/usr/share/icons/hicolor/128x128/apps" \
+            "$STAGE/usr/share/icons/hicolor/256x256@2/apps" \
+            "$STAGE/usr/share/polkit-1/actions"
+
+          # Copy binaries
+          cp "$BIN/gpclient"      "$STAGE/usr/bin/"
+          cp "$BIN/gpauth"        "$STAGE/usr/bin/"
+          cp "$BIN/gpservice"     "$STAGE/usr/bin/"
+          cp "$BIN/gpgui-replica" "$STAGE/usr/bin/gpgui"
+
+          # Copy support files
+          cp "$FILES/usr/libexec/gpclient/vpnc-script" "$STAGE/usr/libexec/gpclient/"
+          cp "$FILES/usr/libexec/gpclient/hipreport.sh" "$STAGE/usr/libexec/gpclient/"
+          cp "$FILES/usr/lib/NetworkManager/dispatcher.d/pre-down.d/gpclient.down" \
+            "$STAGE/usr/lib/NetworkManager/dispatcher.d/pre-down.d/"
+          cp "$FILES/usr/lib/NetworkManager/dispatcher.d/gpclient-nm-hook" \
+            "$STAGE/usr/lib/NetworkManager/dispatcher.d/"
+          cp "$FILES/usr/share/applications/gpgui.desktop" "$STAGE/usr/share/applications/"
+          cp "$FILES/usr/share/icons/hicolor/scalable/apps/gpgui.svg" \
+            "$STAGE/usr/share/icons/hicolor/scalable/apps/"
+          cp "$FILES/usr/share/icons/hicolor/32x32/apps/gpgui.png" \
+            "$STAGE/usr/share/icons/hicolor/32x32/apps/"
+          cp "$FILES/usr/share/icons/hicolor/128x128/apps/gpgui.png" \
+            "$STAGE/usr/share/icons/hicolor/128x128/apps/"
+          cp "$FILES/usr/share/icons/hicolor/256x256@2/apps/gpgui.png" \
+            "$STAGE/usr/share/icons/hicolor/256x256@2/apps/"
+          cp "$FILES/usr/share/polkit-1/actions/com.atharv.gpgui.policy" \
+            "$STAGE/usr/share/polkit-1/actions/"
+
+          # Set permissions
+          chmod 755 "$STAGE/usr/bin/"* "$STAGE/usr/libexec/gpclient/"* \
+            "$STAGE/usr/lib/NetworkManager/dispatcher.d/pre-down.d/gpclient.down" \
+            "$STAGE/usr/lib/NetworkManager/dispatcher.d/gpclient-nm-hook"
+
+          # Calculate installed size
+          SIZE=$(du -sk "$STAGE" | cut -f1)
+
+          # Write control file
+          cat > "$STAGE/DEBIAN/control" << EOF
+          Package: ${PKG_NAME}
+          Version: ${PKG_VERSION}
+          Architecture: ${{ matrix.dpkg_arch }}
+          Maintainer: Atharv <https://github.com/madhu-gowda6>
+          Description: GP Connect - GlobalProtect VPN client
+           A modern open-source GUI and CLI client for GlobalProtect VPN,
+           built on OpenConnect with full support for SSO authentication.
+          Section: net
+          Priority: optional
+          Installed-Size: ${SIZE}
+          Depends: libwebkit2gtk-4.1-0, libayatana-appindicator3-1, librsvg2-2, libssl3, policykit-1
+          Homepage: https://github.com/madhu-gowda6/GlobalProtect-openconnect
+          EOF
+
+          # Remove leading whitespace from heredoc
+          sed -i 's/^          //' "$STAGE/DEBIAN/control"
+
+          # postinst
+          cat > "$STAGE/DEBIAN/postinst" << 'EOF'
+          #!/bin/sh
+          set -e
+          update-desktop-database -q /usr/share/applications 2>/dev/null || true
+          gtk-update-icon-cache -q -t /usr/share/icons/hicolor 2>/dev/null || true
+          EOF
+          sed -i 's/^          //' "$STAGE/DEBIAN/postinst"
+          chmod 755 "$STAGE/DEBIAN/postinst"
+
+          # postrm
+          cat > "$STAGE/DEBIAN/postrm" << 'EOF'
+          #!/bin/sh
+          set -e
+          if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+            update-desktop-database -q /usr/share/applications 2>/dev/null || true
+            gtk-update-icon-cache -q -t /usr/share/icons/hicolor 2>/dev/null || true
+          fi
+          EOF
+          sed -i 's/^          //' "$STAGE/DEBIAN/postrm"
+          chmod 755 "$STAGE/DEBIAN/postrm"
+
+          # Build .deb
+          OUTPUT="${PKG_NAME}_${PKG_VERSION}_${{ matrix.dpkg_arch }}.deb"
+          dpkg-deb --build "$STAGE" "$OUTPUT"
+          echo "Built: $OUTPUT ($(du -h "$OUTPUT" | cut -f1))"
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-${{ matrix.dpkg_arch }}
+          path: "*.deb"
+
+  release:
+    needs: build-deb
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: List packages
+        run: ls -lh *.deb
+
+      - name: Create or update release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.PKG_VERSION }}
+          name: "v${{ env.PKG_VERSION }}"
+          body: |
+            ## GP Connect v${{ env.PKG_VERSION }}
+
+            ### Installation
+
+            ```bash
+            sudo apt install ./globalprotect-openconnect_${{ env.PKG_VERSION }}_$(dpkg --print-architecture).deb
+            ```
+
+            After install, launch with:
+            ```bash
+            gpclient launch-gui
+            ```
+          files: "*.deb"
+          make_latest: true
+    env:
+      PKG_VERSION: "1.0.0"
