@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Collapse, IconButton, keyframes, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { open } from "@tauri-apps/plugin-shell";
+import { UpdateBanner } from "./components/UpdateBanner";
 import { Header } from "./components/Header";
 import { StatusShield } from "./components/StatusShield";
 import { PortalInput } from "./components/PortalInput";
@@ -23,6 +24,7 @@ import {
 import {
   cancelCredentials,
   cancelMfa,
+  checkForUpdates,
   connectPortal,
   disconnectVpn,
   getSettings,
@@ -32,9 +34,10 @@ import {
   Settings,
   submitCredentials,
   submitMfa,
+  UpdateInfo,
 } from "./tauri/commands";
 
-const APP_VERSION = "v1.0.0";
+const APP_VERSION = "v1.0.1";
 
 const blink = keyframes`
   0%, 100% { opacity: 1; }
@@ -81,6 +84,8 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [mfa, setMfa] = useState<string | null>(null);
   const [creds, setCreds] = useState<CredentialPrompt | null>(null);
+  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
+  const [showUpdateBanner, setShowUpdateBanner] = useState(false);
   const authBusy = authPhase !== null;
   const authBusyRef = useRef(false);
   authBusyRef.current = authBusy;
@@ -130,6 +135,20 @@ export function App() {
         }
       })
       .catch((err) => console.error("get_status failed:", err));
+
+    // Check for updates in the background — don't block startup
+    setTimeout(() => {
+      checkForUpdates()
+        .then((info) => {
+          if (info.available) {
+            setUpdateInfo(info);
+            setShowUpdateBanner(true);
+            // Auto-dismiss the banner after 5 s; dot on menu stays
+            setTimeout(() => setShowUpdateBanner(false), 5000);
+          }
+        })
+        .catch(() => {});
+    }, 3000);
 
     return () => unlisteners.forEach((u) => u());
   }, []);
@@ -195,6 +214,9 @@ export function App() {
       case "quit":
         quitApp().catch((err) => console.error("quit_app failed:", err));
         return;
+      case "update":
+        if (updateInfo) open(updateInfo.releaseUrl);
+        return;
       case "switchGateway":
       case "clearCredentials":
         console.info("menu action (stub):", action);
@@ -221,6 +243,7 @@ export function App() {
       <Header
         onMenuClick={setMenuAnchor}
         onGitHubClick={() => open("https://github.com/madhu-gowda6/GlobalProtect-openconnect")}
+        hasUpdate={!!updateInfo}
       />
 
       <HamburgerMenu
@@ -229,6 +252,7 @@ export function App() {
         onClose={() => setMenuAnchor(null)}
         onAction={handleMenuAction}
         canSwitchGateway={status === "connected"}
+        hasUpdate={!!updateInfo}
       />
       <MfaDialog
         open={mfa !== null}
@@ -337,7 +361,7 @@ export function App() {
           </Typography>
         )}
 
-        {/* Bottom group — portal input + button + footer */}
+        {/* Bottom group — update banner + portal input + button + footer */}
         <Box
           sx={{
             mt: "auto",
@@ -347,6 +371,14 @@ export function App() {
             gap: 1,
           }}
         >
+          {updateInfo && showUpdateBanner && (
+            <UpdateBanner
+              latestVersion={updateInfo.latestVersion}
+              releaseUrl={updateInfo.releaseUrl}
+              onDismiss={() => setShowUpdateBanner(false)}
+              onOpenRelease={() => open(updateInfo.releaseUrl)}
+            />
+          )}
           <PortalInput
             value={portal}
             onChange={setPortal}
