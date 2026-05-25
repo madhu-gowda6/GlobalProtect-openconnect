@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import { open } from "@tauri-apps/plugin-shell";
 import { Header } from "./components/Header";
 import { StatusShield } from "./components/StatusShield";
 import { PortalInput } from "./components/PortalInput";
@@ -201,7 +202,10 @@ export function App() {
         userSelect: "none",
       }}
     >
-      <Header onMenuClick={setMenuAnchor} />
+      <Header
+        onMenuClick={setMenuAnchor}
+        onGitHubClick={() => open("https://github.com/madhu-gowda6/GlobalProtect-openconnect")}
+      />
       <HamburgerMenu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
@@ -289,7 +293,10 @@ export function App() {
 
         <Box sx={{ flex: 1 }} />
 
-        <Footer version={APP_VERSION} />
+        <Footer
+          version={APP_VERSION}
+          onFeedback={() => open("https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues")}
+        />
       </Box>
     </Box>
   );
