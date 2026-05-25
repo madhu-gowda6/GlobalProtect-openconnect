@@ -17,11 +17,11 @@ PKG = $(PKG_NAME)-$(VERSION)
 SERIES ?= $(shell lsb_release -cs)
 PUBLISH ?= 0
 
-# Indicates whether to build the GUI components
-BUILD_GUI_HELPER ?= 1
+# Indicates whether to build the GUI components (disabled: gpgui-helper is not used)
+BUILD_GUI_HELPER ?= 0
 
-export DEBEMAIL = k3vinyue@gmail.com
-export DEBFULLNAME = Kevin Yue
+export DEBEMAIL = atharv13@gmail.com
+export DEBFULLNAME = atharv
 export SNAPSHOT = $(shell test -f SNAPSHOT && echo "true" || echo "false")
 export OFFLINE_BUILD = $(shell test -f OFFLINE_BUILD && echo "1" || echo "0")
 # If OFFLINE is not set, use OFFLINE_BUILD
@@ -72,20 +72,7 @@ tarball: clean-tarball
 	@echo "Creating tarball..."
 	tar --exclude .vendor --exclude target --transform 's,^,${PKG}/,' -czf .build/tarball/${PKG}.tar.gz * .cargo
 
-download-gui:
-	rm -rf .build/gpgui
-
-	if [ $(INCLUDE_GUI) -eq 1 ]; then \
-		echo "Downloading GlobalProtect GUI..."; \
-		mkdir -p .build/gpgui; \
-		curl -sSL https://github.com/madhu-gowda6/GlobalProtect-openconnect/releases/download/$(RELEASE_TAG)/gpgui_$(shell uname -m)$(GUI_LIBC_SUFFIX).bin.tar.xz \
-			-o .build/gpgui/gpgui_$(shell uname -m)$(GUI_LIBC_SUFFIX).bin.tar.xz; \
-		tar -xJf .build/gpgui/*.tar.xz -C .build/gpgui; \
-	else \
-		echo "Skipping GlobalProtect GUI download (INCLUDE_GUI=0)"; \
-	fi
-
-build: download-gui build-rs
+build: build-rs
 
 build-rs:
 	if [ $(OFFLINE) -eq 1 ]; then \
@@ -97,12 +84,7 @@ build-rs:
 		rm -vf rust-toolchain.toml; \
 	fi
 
-	# Only build the GUI components if BUILD_GUI_HELPER is set to 1
-	if [ $(BUILD_GUI_HELPER) -eq 1 ]; then \
-		$(CARGO) build $(CARGO_BUILD_ARGS) -p gpclient -p gpservice -p gpauth -p gpgui-helper; \
-	else \
-		$(CARGO) build $(CARGO_BUILD_ARGS) -p gpclient -p gpservice -p gpauth --no-default-features; \
-	fi
+	$(CARGO) build $(CARGO_BUILD_ARGS) -p gpclient -p gpservice -p gpauth
 
 clean:
 	$(CARGO) clean
@@ -116,15 +98,7 @@ install:
 	install -Dm755 target/release/gpclient $(DESTDIR)/usr/bin/gpclient
 	install -Dm755 target/release/gpauth $(DESTDIR)/usr/bin/gpauth
 	install -Dm755 target/release/gpservice $(DESTDIR)/usr/bin/gpservice
-
-	# Install the GUI components if BUILD_GUI_HELPER is set to 1
-	if [ $(BUILD_GUI_HELPER) -eq 1 ]; then \
-		install -Dm755 target/release/gpgui-helper $(DESTDIR)/usr/bin/gpgui-helper; \
-	fi
-
-	if [ -f .build/gpgui/gpgui_*/gpgui ]; then \
-		install -Dm755 .build/gpgui/gpgui_*/gpgui $(DESTDIR)/usr/bin/gpgui; \
-	fi
+	install -Dm755 target/release/gpgui-replica $(DESTDIR)/usr/bin/gpgui-replica
 
 	install -Dm755 packaging/files/usr/libexec/gpclient/vpnc-script $(DESTDIR)/usr/libexec/gpclient/vpnc-script
 	install -Dm755 packaging/files/usr/libexec/gpclient/hipreport.sh $(DESTDIR)/usr/libexec/gpclient/hipreport.sh
@@ -146,8 +120,7 @@ uninstall:
 	rm -f $(DESTDIR)/usr/bin/gpclient
 	rm -f $(DESTDIR)/usr/bin/gpauth
 	rm -f $(DESTDIR)/usr/bin/gpservice
-	rm -f $(DESTDIR)/usr/bin/gpgui-helper
-	rm -f $(DESTDIR)/usr/bin/gpgui
+	rm -f $(DESTDIR)/usr/bin/gpgui-replica
 
 	rm -f $(DESTDIR)/usr/libexec/gpclient/vpnc-script
 	rm -f $(DESTDIR)/usr/libexec/gpclient/hipreport.sh

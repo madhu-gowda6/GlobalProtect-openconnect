@@ -8,7 +8,6 @@ use gpapi::{
 };
 use log::{info, warn};
 use openconnect::{find_csd_wrapper, find_vpnc_script};
-use serde::de::DeserializeOwned;
 use tokio::{
   net::TcpListener,
   sync::{RwLock, mpsc, watch},
@@ -39,10 +38,6 @@ impl WsServerContext {
       redaction,
       connections: Default::default(),
     }
-  }
-
-  pub fn decrypt<T: DeserializeOwned>(&self, encrypted: Vec<u8>) -> anyhow::Result<T> {
-    self.crypto.decrypt(encrypted)
   }
 
   pub async fn send_event(&self, event: WsEvent) {

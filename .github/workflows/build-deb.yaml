@@ -137,7 +137,7 @@ jobs:
           cp "$BIN/gpclient"      "$STAGE/usr/bin/"
           cp "$BIN/gpauth"        "$STAGE/usr/bin/"
           cp "$BIN/gpservice"     "$STAGE/usr/bin/"
-          cp "$BIN/gpgui-replica" "$STAGE/usr/bin/gpgui"
+          cp "$BIN/gpgui-replica" "$STAGE/usr/bin/gpgui-replica"
 
           # Copy support files
           cp "$FILES/usr/libexec/gpclient/vpnc-script" "$STAGE/usr/libexec/gpclient/"

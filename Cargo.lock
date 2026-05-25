@@ -203,7 +203,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "auth"
-version = "0.9.0"
+version = "1.0.1"
 dependencies = [
  "anyhow",
  "block2",
@@ -652,7 +652,7 @@ dependencies = [
 
 [[package]]
 name = "common"
-version = "0.9.0"
+version = "1.0.1"
 
 [[package]]
 name = "compile-time"
@@ -1244,17 +1244,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "filetime"
-version = "0.2.27"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f98844151eee8917efc50bd9e8318cb963ae8b297431495d3f758616ea5c57db"
-dependencies = [
- "cfg-if",
- "libc",
- "libredox",
-]
-
-[[package]]
 name = "find-msvc-tools"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1685,7 +1674,7 @@ dependencies = [
 
 [[package]]
 name = "gpapi"
-version = "0.9.0"
+version = "1.0.1"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -1728,7 +1717,7 @@ dependencies = [
 
 [[package]]
 name = "gpauth"
-version = "0.9.0"
+version = "1.0.1"
 dependencies = [
  "anyhow",
  "auth",
@@ -1748,7 +1737,7 @@ dependencies = [
 
 [[package]]
 name = "gpclient"
-version = "0.9.0"
+version = "1.0.1"
 dependencies = [
  "anyhow",
  "askama",
@@ -1775,7 +1764,7 @@ dependencies = [
 
 [[package]]
 name = "gpgui-helper"
-version = "0.9.0"
+version = "1.0.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -1793,7 +1782,7 @@ dependencies = [
 
 [[package]]
 name = "gpgui-replica"
-version = "0.9.0"
+version = "1.0.1"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -1816,7 +1805,7 @@ dependencies = [
 
 [[package]]
 name = "gpservice"
-version = "0.9.0"
+version = "1.0.1"
 dependencies = [
  "anyhow",
  "axum",
@@ -1830,10 +1819,8 @@ dependencies = [
  "openconnect",
  "serde",
  "serde_json",
- "tar",
  "tokio",
  "tokio-util",
- "xz2",
 ]
 
 [[package]]
@@ -2629,17 +2616,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "lzma-sys"
-version = "0.1.20"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5fda04ab3764e6cde78b9974eec4f779acaba7c4e84b36eca3cf77c581b85d27"
-dependencies = [
- "cc",
- "libc",
- "pkg-config",
-]
-
-[[package]]
 name = "mac-addr"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3185,7 +3161,7 @@ dependencies = [
 
 [[package]]
 name = "openconnect"
-version = "0.9.0"
+version = "1.0.1"
 dependencies = [
  "autotools",
  "cc",
@@ -4682,17 +4658,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.117",
-]
-
-[[package]]
-name = "tar"
-version = "0.4.45"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22692a6476a21fa75fdfc11d452fda482af402c008cdbaf3476414e122040973"
-dependencies = [
- "filetime",
- "libc",
- "xattr",
 ]
 
 [[package]]
@@ -6567,16 +6532,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "xattr"
-version = "1.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32e45ad4206f6d2479085147f02bc2ef834ac85886624a23575ae137c8aa8156"
-dependencies = [
- "libc",
- "rustix",
-]
-
-[[package]]
 name = "xml"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6589,15 +6544,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cbc04313cab124e498ab1724e739720807b6dc405b9ed0edc5860164d2e4ff70"
 dependencies = [
  "xml",
-]
-
-[[package]]
-name = "xz2"
-version = "0.1.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "388c44dc09d76f1536602ead6d325eb532f5c122f17782bd57fb47baeeb767e2"
-dependencies = [
- "lzma-sys",
 ]
 
 [[package]]

@@ -9,12 +9,11 @@ use common::constants::GP_GUI_BINARY;
 use log::info;
 use tokio::{io::AsyncWriteExt, process::Command};
 
-use crate::{process::gui_helper_launcher::GuiHelperLauncher, utils::base64};
+use crate::utils::base64;
 
 use super::command_traits::CommandExt;
 
 pub struct GuiLauncher<'a> {
-  version: &'a str,
   program: PathBuf,
   api_key: &'a [u8],
   minimized: bool,
@@ -22,9 +21,8 @@ pub struct GuiLauncher<'a> {
 }
 
 impl<'a> GuiLauncher<'a> {
-  pub fn new(version: &'a str, api_key: &'a [u8]) -> Self {
+  pub fn new(_version: &'a str, api_key: &'a [u8]) -> Self {
     Self {
-      version,
       program: GP_GUI_BINARY.into(),
       api_key,
       minimized: false,
@@ -43,13 +41,6 @@ impl<'a> GuiLauncher<'a> {
   }
 
   pub async fn launch(&self) -> anyhow::Result<ExitStatus> {
-    // Check if the program's version
-    if let Err(err) = self.check_version().await {
-      info!("Check version failed: {}", err);
-      // Download the program and replace the current one
-      self.download_program().await?;
-    }
-
     self.launch_program().await
   }
 
@@ -67,7 +58,7 @@ impl<'a> GuiLauncher<'a> {
       cmd.arg("--minimized");
     }
 
-    info!("Launching gpgui");
+    info!("Launching gpgui-replica");
     let mut non_root_cmd = cmd.into_non_root()?;
     let child = non_root_cmd.kill_on_drop(true).stdin(Stdio::piped()).spawn();
     let mut child = match child {
@@ -88,38 +79,5 @@ impl<'a> GuiLauncher<'a> {
     let exit_status = child.wait().await?;
 
     Ok(exit_status)
-  }
-
-  async fn check_version(&self) -> anyhow::Result<()> {
-    let cmd = Command::new(&self.program).arg("--version").output().await?;
-    let output = String::from_utf8_lossy(&cmd.stdout);
-
-    // Version string: "gpgui 2.0.0 (2024-02-05)"
-    let Some(version) = output.split_whitespace().nth(1) else {
-      bail!("Failed to parse version: {}", output);
-    };
-
-    if version != self.version {
-      bail!("Version mismatch: expected {}, got {}", self.version, version);
-    }
-
-    info!("Version check passed: {}", version);
-
-    Ok(())
-  }
-
-  async fn download_program(&self) -> anyhow::Result<()> {
-    let gui_helper = GuiHelperLauncher::new(self.api_key);
-
-    gui_helper
-      .envs(self.envs.as_ref())
-      .gui_version(Some(self.version))
-      .launch()
-      .await?;
-
-    // Check the version again
-    self.check_version().await?;
-
-    Ok(())
   }
 }
