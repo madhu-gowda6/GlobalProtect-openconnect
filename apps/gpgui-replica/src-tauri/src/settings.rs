@@ -46,7 +46,7 @@ pub struct Settings {
 impl Default for Settings {
     fn default() -> Self {
         Self {
-            theme: "system".to_string(),
+            theme: "dark".to_string(),
             hidpi: false,
             start_minimized: false,
             auto_connect: false,

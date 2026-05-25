@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Collapse, IconButton, keyframes, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { open } from "@tauri-apps/plugin-shell";
 import { Header } from "./components/Header";
 import { StatusShield } from "./components/StatusShield";
@@ -35,6 +36,38 @@ import {
 
 const APP_VERSION = "v1.0.0";
 
+const blink = keyframes`
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+`;
+
+function StatusDot({ status, busy }: { status: ConnectionStatus; busy: boolean }) {
+  const effective = busy ? "connecting" : status;
+  const color =
+    effective === "connected"
+      ? "#10B981"
+      : effective === "connecting" || effective === "disconnecting"
+      ? "primary.main"
+      : "text.disabled";
+
+  return (
+    <Box
+      sx={{
+        width: 8,
+        height: 8,
+        borderRadius: "50%",
+        bgcolor: color,
+        flexShrink: 0,
+        transition: "background-color 0.4s",
+        animation:
+          effective === "connecting" || effective === "disconnecting"
+            ? `${blink} 1.1s ease-in-out infinite`
+            : "none",
+      }}
+    />
+  );
+}
+
 export function App() {
   const [portal, setPortal] = useState("");
   const [activePortal, setActivePortal] = useState<string | undefined>(undefined);
@@ -44,7 +77,6 @@ export function App() {
   const [recentPortals, setRecentPortals] = useState<string[]>([]);
   const settingsRef = useRef<Settings | null>(null);
 
-  // Auth phase runs in our process before gpservice takes over the state.
   const [authPhase, setAuthPhase] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mfa, setMfa] = useState<string | null>(null);
@@ -56,14 +88,11 @@ export function App() {
   useEffect(() => {
     const unlisteners: Array<() => void> = [];
 
-    // Load saved settings (for connect options + recent portals)
     getSettings()
       .then((s) => {
         settingsRef.current = s;
         setRecentPortals(s.recentPortals);
-        if (s.recentPortals.length > 0 && !portal) {
-          setPortal(s.recentPortals[0]);
-        }
+        if (s.recentPortals.length > 0 && !portal) setPortal(s.recentPortals[0]);
       })
       .catch(console.error);
 
@@ -71,20 +100,16 @@ export function App() {
       const next = vpnStateToStatus(s);
       setStatus(next);
       setActivePortal(vpnStatePortal(s));
-      // Once gpservice owns the state, clear our local auth phase.
       if (next !== "disconnected") setAuthPhase(null);
+      if (next === "connected") setError(null);
     }).then((u) => unlisteners.push(u));
 
     onServiceStatus((s) => {
       setServiceUp(s === "connected");
-      if (s === "disconnected") {
-        setStatus("disconnected");
-        setActivePortal(undefined);
-      }
+      if (s === "disconnected") { setStatus("disconnected"); setActivePortal(undefined); }
     }).then((u) => unlisteners.push(u));
 
     onConnectProgress((msg) => {
-      // Ignore stale progress if we already cancelled locally.
       if (authBusyRef.current) setAuthPhase(msg);
     }).then((u) => unlisteners.push(u));
 
@@ -96,7 +121,6 @@ export function App() {
       setCreds(prompt);
     }).then((u) => unlisteners.push(u));
 
-    // Sync initial state — the WS may have connected before we subscribed.
     getStatus()
       .then((s) => {
         setServiceUp(s.serviceUp);
@@ -147,8 +171,6 @@ export function App() {
         clientVersion: s?.clientVersion || undefined,
         userAgent: s?.userAgent || undefined,
       });
-      // Success path: gpservice now emits VpnState; auth phase clears on the
-      // first non-disconnected state event.
     } catch (e) {
       setAuthPhase(null);
       setError(String(e));
@@ -160,16 +182,8 @@ export function App() {
       disconnectVpn().catch((err) => setError(String(err)));
       return;
     }
-    if (authBusy) {
-      // Local cancel: stop showing progress. The gpauth window (if open)
-      // must still be closed by the user; full cancel lands in a later pass.
-      setAuthPhase(null);
-      return;
-    }
-    if (!portal.trim()) {
-      setError("Enter a portal address first.");
-      return;
-    }
+    if (authBusy) { setAuthPhase(null); return; }
+    if (!portal.trim()) { setError("Enter a portal address first."); return; }
     startConnect();
   };
 
@@ -188,6 +202,7 @@ export function App() {
     }
   };
 
+  const effectiveStatus: ConnectionStatus = authBusy ? "connecting" : status;
   const shieldPortal = activePortal ?? (portal || undefined);
   const mainLine = authPhase ?? statusLabel(status);
 
@@ -200,12 +215,14 @@ export function App() {
         bgcolor: "background.default",
         color: "text.primary",
         userSelect: "none",
+        overflow: "hidden",
       }}
     >
       <Header
         onMenuClick={setMenuAnchor}
         onGitHubClick={() => open("https://github.com/madhu-gowda6/GlobalProtect-openconnect")}
       />
+
       <HamburgerMenu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
@@ -232,83 +249,120 @@ export function App() {
           flexDirection: "column",
           alignItems: "center",
           px: 2.5,
-          pb: 1.5,
-          gap: 1.25,
+          pb: 2,
+          gap: 1,
         }}
       >
-        <StatusShield status={authBusy ? "connecting" : status} />
+        {/* Shield */}
+        <StatusShield status={effectiveStatus} />
 
-        <Typography
-          variant="body1"
-          sx={{
-            fontSize: 18,
-            fontWeight: 600,
-            textAlign: "center",
-            color: status === "connected" ? "#10B981" : "text.primary",
-            transition: "color 0.3s",
-          }}
-        >
-          {mainLine}
-        </Typography>
+        {/* Status line */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.9 }}>
+          <StatusDot status={status} busy={authBusy} />
+          <Typography
+            sx={{
+              fontSize: 18,
+              fontWeight: 700,
+              color: status === "connected" ? "#10B981" : "text.primary",
+              transition: "color 0.4s",
+              letterSpacing: 0.1,
+            }}
+          >
+            {mainLine}
+          </Typography>
+        </Box>
 
-        {shieldPortal && status === "connected" && (
+        {/* Portal sub-label when connected */}
+        {status === "connected" && shieldPortal && (
           <Typography
             variant="caption"
-            sx={{ fontSize: 12, color: "text.secondary", textAlign: "center", mt: -0.75 }}
+            sx={{ fontSize: 12, color: "text.secondary", mt: -0.5, textAlign: "center" }}
           >
             {shieldPortal}
           </Typography>
         )}
 
-        {error && (
+        {/* Error banner — dismissible */}
+        <Collapse in={!!error} sx={{ width: "100%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 1,
+              bgcolor: (t) =>
+                t.palette.mode === "dark"
+                  ? "rgba(239,68,68,0.12)"
+                  : "rgba(239,68,68,0.08)",
+              border: "1px solid rgba(239,68,68,0.25)",
+              borderRadius: "10px",
+              px: 1.5,
+              py: 0.75,
+            }}
+          >
+            <Typography
+              sx={{ flex: 1, fontSize: 12, color: "error.main", lineHeight: 1.4 }}
+            >
+              {error}
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => setError(null)}
+              sx={{ p: 0.25, color: "error.main", opacity: 0.7, "&:hover": { opacity: 1 } }}
+            >
+              <CloseIcon sx={{ fontSize: 14 }} />
+            </IconButton>
+          </Box>
+        </Collapse>
+
+        {/* Service warning */}
+        {!serviceUp && !error && (
           <Typography
             variant="caption"
             sx={{
               fontSize: 11,
-              color: "#ef5350",
+              color: "warning.main",
+              bgcolor: (t) =>
+                t.palette.mode === "dark"
+                  ? "rgba(245,158,11,0.1)"
+                  : "rgba(245,158,11,0.08)",
+              border: "1px solid rgba(245,158,11,0.2)",
+              borderRadius: "8px",
+              px: 1.5,
+              py: 0.5,
+              width: "100%",
               textAlign: "center",
-              px: 1,
-              maxHeight: 48,
-              overflow: "auto",
             }}
-          >
-            {error}
-          </Typography>
-        )}
-
-        {!serviceUp && !error && (
-          <Typography
-            variant="caption"
-            sx={{ fontSize: 11, color: "#ffa726", mt: -0.75 }}
           >
             gpservice unreachable — retrying...
           </Typography>
         )}
 
-        <Box sx={{ width: "100%", mt: 0.5 }}>
+        {/* Bottom group — portal input + button + footer */}
+        <Box
+          sx={{
+            mt: "auto",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+          }}
+        >
           <PortalInput
             value={portal}
             onChange={setPortal}
+            onEnter={handleConnectClick}
             disabled={status !== "disconnected" || authBusy}
             recentPortals={recentPortals}
             onSelectRecent={(p) => setPortal(p)}
           />
-        </Box>
-
-        <Box sx={{ width: "100%" }}>
-          <ConnectButton
-            status={status}
-            busy={authBusy}
-            onClick={handleConnectClick}
+          <ConnectButton status={status} busy={authBusy} onClick={handleConnectClick} />
+          <Footer
+            version={APP_VERSION}
+            onFeedback={() =>
+              open("https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues")
+            }
           />
         </Box>
-
-        <Box sx={{ flex: 1 }} />
-
-        <Footer
-          version={APP_VERSION}
-          onFeedback={() => open("https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues")}
-        />
       </Box>
     </Box>
   );
