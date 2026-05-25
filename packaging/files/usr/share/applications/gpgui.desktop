@@ -8,5 +8,5 @@ Categories=Network;Dialup;
 Exec=/usr/bin/gpclient launch-gui %u
 MimeType=x-scheme-handler/globalprotectcallback;
 Icon=gpgui
-StartupWMClass=com.atharv.gpgui
+StartupWMClass=gpgui
 Keywords=GlobalProtect;Openconnect;SAML;connection;VPN;
