@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Collapse, IconButton, keyframes, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { open } from "@tauri-apps/plugin-shell";
+import { getVersion } from "@tauri-apps/api/app";
 import { UpdateBanner } from "./components/UpdateBanner";
 import { Header } from "./components/Header";
 import { StatusShield } from "./components/StatusShield";
@@ -37,7 +38,6 @@ import {
   UpdateInfo,
 } from "./tauri/commands";
 
-const APP_VERSION = "v1.0.1";
 
 const blink = keyframes`
   0%, 100% { opacity: 1; }
@@ -84,6 +84,7 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [mfa, setMfa] = useState<string | null>(null);
   const [creds, setCreds] = useState<CredentialPrompt | null>(null);
+  const [appVersion, setAppVersion] = useState("");
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
   const [showUpdateBanner, setShowUpdateBanner] = useState(false);
   const authBusy = authPhase !== null;
@@ -92,6 +93,8 @@ export function App() {
 
   useEffect(() => {
     const unlisteners: Array<() => void> = [];
+
+    getVersion().then((v) => setAppVersion(`v${v}`)).catch(() => {});
 
     getSettings()
       .then((s) => {
@@ -389,7 +392,7 @@ export function App() {
           />
           <ConnectButton status={status} busy={authBusy} onClick={handleConnectClick} />
           <Footer
-            version={APP_VERSION}
+            version={appVersion}
             onFeedback={() =>
               open("https://github.com/madhu-gowda6/GlobalProtect-openconnect/issues")
             }

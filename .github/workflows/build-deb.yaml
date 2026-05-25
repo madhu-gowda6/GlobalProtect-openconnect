@@ -7,7 +7,6 @@ on:
 
 env:
   PKG_NAME: globalprotect-openconnect
-  PKG_VERSION: "1.0.0"
 
 jobs:
   build-deb:
@@ -25,6 +24,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Read version from Cargo.toml
+        run: |
+          PKG_VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          echo "PKG_VERSION=$PKG_VERSION" >> $GITHUB_ENV
 
       - name: Fetch C source dependencies
         run: |
@@ -221,6 +225,13 @@ jobs:
       contents: write
 
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version from Cargo.toml
+        run: |
+          PKG_VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/version = "\(.*\)"/\1/')
+          echo "PKG_VERSION=$PKG_VERSION" >> $GITHUB_ENV
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -249,5 +260,3 @@ jobs:
             ```
           files: "*.deb"
           make_latest: true
-    env:
-      PKG_VERSION: "1.0.0"
