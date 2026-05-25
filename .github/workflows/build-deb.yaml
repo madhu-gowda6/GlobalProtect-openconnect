@@ -146,7 +146,7 @@ jobs:
             "$STAGE/usr/lib/NetworkManager/dispatcher.d/pre-down.d/"
           cp "$FILES/usr/lib/NetworkManager/dispatcher.d/gpclient-nm-hook" \
             "$STAGE/usr/lib/NetworkManager/dispatcher.d/"
-          cp "$FILES/usr/share/applications/gpgui.desktop" "$STAGE/usr/share/applications/"
+          cp "$FILES/usr/share/applications/gpgui.desktop" "$STAGE/usr/share/applications/com.atharv.gpgui.desktop"
           cp "$FILES/usr/share/icons/hicolor/scalable/apps/gpgui.svg" \
             "$STAGE/usr/share/icons/hicolor/scalable/apps/"
           cp "$FILES/usr/share/icons/hicolor/32x32/apps/gpgui.png" \
