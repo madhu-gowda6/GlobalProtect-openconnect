@@ -51,13 +51,15 @@ export function PortalInput({ value, onChange, disabled, recentPortals, onSelect
             ),
           },
           inputLabel: {
-            sx: { color: "primary.main" },
+            sx: { color: "text.secondary" },
           },
         }}
         sx={{
+          "& .MuiInputLabel-root.Mui-focused": { color: "primary.main" },
           "& .MuiOutlinedInput-root": {
-            "& fieldset": { borderColor: "primary.main" },
-            "&:hover fieldset": { borderColor: "primary.main" },
+            "& fieldset": { borderColor: "divider" },
+            "&:hover fieldset": { borderColor: "text.disabled" },
+            "&.Mui-focused fieldset": { borderColor: "primary.main" },
           },
         }}
       />

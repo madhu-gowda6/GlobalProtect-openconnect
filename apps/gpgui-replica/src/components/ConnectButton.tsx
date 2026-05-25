@@ -17,15 +17,17 @@ export function ConnectButton({ status, onClick, busy }: Props) {
       fullWidth
       disableElevation
       sx={{
-        bgcolor: "#9ec5ff",
-        color: "#0d1b2a",
+        bgcolor: "primary.main",
+        color: "primary.contrastText",
         textTransform: "none",
-        fontWeight: 500,
-        py: 0.9,
-        "&:hover": { bgcolor: "#b3d2ff" },
+        fontWeight: 600,
+        fontSize: 14,
+        py: 1,
+        borderRadius: "24px",
+        "&:hover": { bgcolor: "primary.dark" },
         "&.Mui-disabled": {
-          bgcolor: "rgba(158,197,255,0.4)",
-          color: "rgba(13,27,42,0.6)",
+          bgcolor: "action.disabledBackground",
+          color: "action.disabled",
         },
       }}
     >

@@ -236,17 +236,29 @@ export function App() {
           gap: 1.25,
         }}
       >
-        <StatusShield
-          status={authBusy ? "connecting" : status}
-          portal={shieldPortal}
-        />
+        <StatusShield status={authBusy ? "connecting" : status} />
 
         <Typography
           variant="body1"
-          sx={{ fontSize: 15, fontWeight: 500, mt: 0.5, textAlign: "center" }}
+          sx={{
+            fontSize: 18,
+            fontWeight: 600,
+            textAlign: "center",
+            color: status === "connected" ? "#10B981" : "text.primary",
+            transition: "color 0.3s",
+          }}
         >
           {mainLine}
         </Typography>
+
+        {shieldPortal && status === "connected" && (
+          <Typography
+            variant="caption"
+            sx={{ fontSize: 12, color: "text.secondary", textAlign: "center", mt: -0.75 }}
+          >
+            {shieldPortal}
+          </Typography>
+        )}
 
         {error && (
           <Typography

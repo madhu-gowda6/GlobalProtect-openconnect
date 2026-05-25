@@ -45,9 +45,9 @@ function useAppTheme() {
           mode,
           background:
             mode === "dark"
-              ? { default: "#1e1e1e", paper: "#262626" }
-              : { default: "#fafafa", paper: "#ffffff" },
-          primary: { main: "#7eb8ff" },
+              ? { default: "#1a1a2e", paper: "#242438" }
+              : { default: "#f8f9fa", paper: "#ffffff" },
+          primary: { main: mode === "dark" ? "#7eb8ff" : "#2563EB" },
         },
         typography: {
           fontFamily:

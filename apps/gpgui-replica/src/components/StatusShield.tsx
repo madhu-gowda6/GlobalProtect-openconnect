@@ -1,99 +1,55 @@
-import { Box, Typography, CircularProgress } from "@mui/material";
-import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckIcon from "@mui/icons-material/Check";
+import { Box, CircularProgress } from "@mui/material";
+import ShieldIcon from "@mui/icons-material/Shield";
 import { ConnectionStatus } from "../types/connection";
 
 type Props = {
   status: ConnectionStatus;
-  portal?: string;
 };
 
-const SIZE = 132;
+const SIZE = 120;
+const CONNECTED_COLOR = "#10B981";
 
-export function StatusShield({ status, portal }: Props) {
+export function StatusShield({ status }: Props) {
+  const isConnected = status === "connected";
+  const isTransitioning = status === "connecting" || status === "disconnecting";
+
   return (
     <Box
       sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        mt: 1,
+        mt: 2,
+        mb: 0.5,
       }}
     >
       <Box
         sx={{
-          position: "relative",
           width: SIZE,
           height: SIZE,
           borderRadius: "50%",
-          bgcolor: "rgba(255,255,255,0.06)",
+          bgcolor: "action.hover",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <ShieldOutlinedIcon
-          sx={{
-            fontSize: 76,
-            color: "rgba(255,255,255,0.55)",
-          }}
-        />
-        <StatusBadge status={status} />
-        {portal && (
-          <Typography
-            variant="caption"
+        {isTransitioning ? (
+          <CircularProgress
+            size={52}
+            thickness={3}
+            sx={{ color: isConnected ? CONNECTED_COLOR : "primary.main" }}
+          />
+        ) : (
+          <ShieldIcon
             sx={{
-              position: "absolute",
-              bottom: 14,
-              left: 0,
-              right: 0,
-              textAlign: "center",
-              color: "primary.main",
-              fontSize: 11,
-              fontWeight: 500,
-              px: 1.5,
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
+              fontSize: 60,
+              color: isConnected ? CONNECTED_COLOR : "text.disabled",
+              transition: "color 0.3s ease",
             }}
-          >
-            {portal}
-          </Typography>
+          />
         )}
       </Box>
     </Box>
   );
-}
-
-function StatusBadge({ status }: { status: ConnectionStatus }) {
-  if (status === "connecting" || status === "disconnecting") {
-    return (
-      <CircularProgress
-        size={28}
-        thickness={4}
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          mt: "-14px",
-          ml: "-14px",
-          color: "primary.main",
-        }}
-      />
-    );
-  }
-
-  const iconSx = {
-    position: "absolute" as const,
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -45%)",
-    fontSize: 28,
-  };
-
-  if (status === "connected") {
-    return <CheckIcon sx={{ ...iconSx, color: "#4caf50" }} />;
-  }
-  return <CloseIcon sx={{ ...iconSx, color: "rgba(255,255,255,0.7)" }} />;
 }
