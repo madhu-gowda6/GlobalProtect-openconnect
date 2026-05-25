@@ -45,9 +45,11 @@ function useAppTheme() {
           mode,
           background:
             mode === "dark"
-              ? { default: "#1e1e1e", paper: "#262626" }
-              : { default: "#fafafa", paper: "#ffffff" },
-          primary: { main: "#7eb8ff" },
+              ? { default: "#13131f", paper: "#1e1e30" }
+              : { default: "#f4f6f9", paper: "#ffffff" },
+          primary: { main: mode === "dark" ? "#60a5fa" : "#2563EB" },
+          error:   { main: "#ef4444" },
+          warning: { main: "#f59e0b" },
         },
         typography: {
           fontFamily:

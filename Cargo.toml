@@ -12,7 +12,7 @@ members = [
 
 [workspace.package]
 rust-version = "1.89"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Atharv <https://github.com/madhu-gowda6>"]
 homepage = "https://github.com/madhu-gowda6/GlobalProtect-openconnect"
 edition = "2024"

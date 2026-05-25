@@ -15,7 +15,7 @@ export function AboutTab() {
       <Typography sx={{ fontSize: 13, color: "rgba(255,255,255,0.75)", mb: 0.5 }}>
         Developed by{" "}
         <Link
-          href="https://github.com/madhu-gowda6"
+          href="https://www.linkedin.com/in/atharvagowda/"
           target="_blank"
           rel="noreferrer"
           sx={{ color: "primary.main" }}

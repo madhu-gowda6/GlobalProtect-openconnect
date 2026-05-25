@@ -1,13 +1,15 @@
-import { Menu, MenuItem, ListItemIcon, ListItemText, Divider } from "@mui/material";
+import { Box, Menu, MenuItem, ListItemIcon, ListItemText, Divider } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import HistoryIcon from "@mui/icons-material/History";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 
 export type HamburgerAction =
   | "switchGateway"
   | "clearCredentials"
   | "settings"
+  | "update"
   | "quit";
 
 type Props = {
@@ -16,6 +18,7 @@ type Props = {
   onClose: () => void;
   onAction: (action: HamburgerAction) => void;
   canSwitchGateway?: boolean;
+  hasUpdate?: boolean;
 };
 
 export function HamburgerMenu({
@@ -24,6 +27,7 @@ export function HamburgerMenu({
   onClose,
   onAction,
   canSwitchGateway = false,
+  hasUpdate = false,
 }: Props) {
   const handle = (action: HamburgerAction) => () => {
     onClose();
@@ -41,12 +45,38 @@ export function HamburgerMenu({
         paper: {
           sx: {
             minWidth: 200,
-            bgcolor: "#2a2a2a",
-            border: "1px solid rgba(255,255,255,0.08)",
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
           },
         },
       }}
     >
+      {hasUpdate && (
+        <MenuItem onClick={handle("update")} dense>
+          <ListItemIcon>
+            <SystemUpdateAltIcon fontSize="small" sx={{ color: "primary.main" }} />
+          </ListItemIcon>
+          <ListItemText
+            primary={
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                Update Available
+                <Box
+                  sx={{
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    bgcolor: "primary.main",
+                    flexShrink: 0,
+                  }}
+                />
+              </Box>
+            }
+            slotProps={{ primary: { style: { color: "inherit", fontWeight: 600 } } }}
+          />
+        </MenuItem>
+      )}
+      {hasUpdate && <Divider sx={{ my: 0.5 }} />}
       <MenuItem
         onClick={handle("switchGateway")}
         disabled={!canSwitchGateway}
@@ -69,7 +99,7 @@ export function HamburgerMenu({
         </ListItemIcon>
         <ListItemText primary="Settings" />
       </MenuItem>
-      <Divider sx={{ my: 0.5, borderColor: "rgba(255,255,255,0.08)" }} />
+      <Divider sx={{ my: 0.5 }} />
       <MenuItem onClick={handle("quit")} dense>
         <ListItemIcon>
           <LogoutIcon fontSize="small" />

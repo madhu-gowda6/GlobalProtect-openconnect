@@ -1,99 +1,116 @@
-import { Box, Typography, CircularProgress } from "@mui/material";
-import ShieldOutlinedIcon from "@mui/icons-material/ShieldOutlined";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckIcon from "@mui/icons-material/Check";
+import { Box, keyframes } from "@mui/material";
+import ShieldIcon from "@mui/icons-material/Shield";
 import { ConnectionStatus } from "../types/connection";
 
-type Props = {
-  status: ConnectionStatus;
-  portal?: string;
-};
+const pulseFade = keyframes`
+  0%   { opacity: 0.55; transform: scale(1);    }
+  100% { opacity: 0;    transform: scale(1.55); }
+`;
 
-const SIZE = 132;
+const spin = keyframes`
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+`;
 
-export function StatusShield({ status, portal }: Props) {
+const CONNECTED = "#10B981";
+const CONNECTING_COLOR = "primary.main";
+const SIZE = 100;
+
+type Props = { status: ConnectionStatus };
+
+export function StatusShield({ status }: Props) {
+  const isConnected   = status === "connected";
+  const isConnecting  = status === "connecting";
+  const isDisconnecting = status === "disconnecting";
+  const isTransitioning = isConnecting || isDisconnecting;
+
+  const shieldColor = isConnected
+    ? CONNECTED
+    : isTransitioning
+    ? undefined          // handled via sx color below
+    : "text.disabled";
+
   return (
     <Box
       sx={{
+        position: "relative",
+        width: SIZE + 36,
+        height: SIZE + 36,
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
-        mt: 1,
+        justifyContent: "center",
+        mt: 0.5,
       }}
     >
+      {/* Pulse rings — connected only */}
+      {isConnected && [0, 600].map((delay) => (
+        <Box
+          key={delay}
+          sx={{
+            position: "absolute",
+            width: SIZE + 8,
+            height: SIZE + 8,
+            borderRadius: "50%",
+            bgcolor: "rgba(16,185,129,0.2)",
+            animation: `${pulseFade} 2.4s ease-out infinite`,
+            animationDelay: `${delay}ms`,
+            pointerEvents: "none",
+          }}
+        />
+      ))}
+
+      {/* Spinner arc — connecting / disconnecting */}
+      {isTransitioning && (
+        <Box
+          sx={{
+            position: "absolute",
+            width: SIZE + 14,
+            height: SIZE + 14,
+            borderRadius: "50%",
+            border: "2.5px solid transparent",
+            borderTopColor: isConnecting ? "primary.main" : "error.main",
+            animation: `${spin} 0.75s linear infinite`,
+            pointerEvents: "none",
+          }}
+        />
+      )}
+
+      {/* Circle */}
       <Box
         sx={{
-          position: "relative",
           width: SIZE,
           height: SIZE,
           borderRadius: "50%",
-          bgcolor: "rgba(255,255,255,0.06)",
+          bgcolor: isConnected
+            ? "rgba(16,185,129,0.1)"
+            : "action.selected",
+          border: "1.5px solid",
+          borderColor: isConnected
+            ? "rgba(16,185,129,0.25)"
+            : "transparent",
           display: "flex",
-          justifyContent: "center",
           alignItems: "center",
+          justifyContent: "center",
+          transition: "background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease",
+          boxShadow: isConnected
+            ? "0 0 32px rgba(16,185,129,0.18), inset 0 0 20px rgba(16,185,129,0.06)"
+            : "none",
         }}
       >
-        <ShieldOutlinedIcon
+        <ShieldIcon
           sx={{
-            fontSize: 76,
-            color: "rgba(255,255,255,0.55)",
+            fontSize: 58,
+            color: shieldColor,
+            ...(isTransitioning && {
+              color: isConnecting ? CONNECTING_COLOR : "error.main",
+            }),
+            transition: "color 0.4s ease, filter 0.4s ease",
+            filter: isConnected
+              ? "drop-shadow(0 2px 10px rgba(16,185,129,0.5))"
+              : "none",
           }}
         />
-        <StatusBadge status={status} />
-        {portal && (
-          <Typography
-            variant="caption"
-            sx={{
-              position: "absolute",
-              bottom: 14,
-              left: 0,
-              right: 0,
-              textAlign: "center",
-              color: "primary.main",
-              fontSize: 11,
-              fontWeight: 500,
-              px: 1.5,
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {portal}
-          </Typography>
-        )}
       </Box>
     </Box>
   );
-}
-
-function StatusBadge({ status }: { status: ConnectionStatus }) {
-  if (status === "connecting" || status === "disconnecting") {
-    return (
-      <CircularProgress
-        size={28}
-        thickness={4}
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          mt: "-14px",
-          ml: "-14px",
-          color: "primary.main",
-        }}
-      />
-    );
-  }
-
-  const iconSx = {
-    position: "absolute" as const,
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -45%)",
-    fontSize: 28,
-  };
-
-  if (status === "connected") {
-    return <CheckIcon sx={{ ...iconSx, color: "#4caf50" }} />;
-  }
-  return <CloseIcon sx={{ ...iconSx, color: "rgba(255,255,255,0.7)" }} />;
 }

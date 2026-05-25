@@ -63,3 +63,12 @@ export const cancelCredentials = () => invoke<void>("cancel_credentials");
 export const getSettings = () => invoke<Settings>("get_settings");
 export const saveSettings = (settings: Settings) =>
   invoke<void>("save_settings", { settings });
+
+export type UpdateInfo = {
+  available: boolean;
+  currentVersion: string;
+  latestVersion: string;
+  releaseUrl: string;
+  releaseNotes: string;
+};
+export const checkForUpdates = () => invoke<UpdateInfo>("check_for_updates");

@@ -1,6 +1,7 @@
 mod connect;
 mod ipc;
 mod settings;
+mod updater;
 
 use anyhow::{Context, Result};
 use base64::{Engine, engine::general_purpose::STANDARD as B64};
@@ -156,6 +157,7 @@ pub async fn run() {
   let api_key = read_api_key(&cli).await.expect("read api key");
 
   tauri::Builder::default()
+    .plugin(tauri_plugin_shell::init())
     .invoke_handler(tauri::generate_handler![
       open_settings,
       quit_app,
@@ -168,6 +170,7 @@ pub async fn run() {
       get_status,
       get_settings,
       save_settings,
+      updater::check_for_updates,
     ])
     .setup(move |app| {
       log::info!("gpgui-replica starting");
